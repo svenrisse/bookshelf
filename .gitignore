@@ -1,11 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ui
-# dependencies
-./ui/node_modules/
-./ui/.next/
-next-env.d.ts
-
 # misc
 .DS_Store
 *.pem
@@ -15,10 +9,8 @@ next-env.d.ts
 .env
 .env*.local
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 ui/.next
 ui/node_modules
+ui/next-env.d.ts
