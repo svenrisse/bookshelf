@@ -69,6 +69,9 @@ func main() {
 	}
 	envPath := filepath.Join(dir, ".env")
 	err = godotenv.Load(envPath)
+	if err != nil {
+		logger.Error("Cant load .env files")
+	}
 
 	cfg.smtp.host = os.Getenv("SMTP_HOST")
 	cfg.smtp.port, err = strconv.Atoi(os.Getenv("SMTP_PORT"))
