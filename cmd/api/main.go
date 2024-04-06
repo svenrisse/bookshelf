@@ -58,6 +58,13 @@ type application struct {
 	wg     sync.WaitGroup
 }
 
+// @title			Bookshelf API
+// @version		1.0
+// @description	This is the API for the Bookshelf application.
+// @contact.name	API Support
+// @contact.email	svenrisse0@gmail.com
+// @host			bookshelf.svenrisse.com
+// @BasePath		/v1
 func main() {
 	var cfg config
 
