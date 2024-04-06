@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -62,10 +63,12 @@ func main() {
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	err := godotenv.Load(".env")
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		logger.Error("Error loading .env file")
+		logger.Error(err.Error())
 	}
+	envPath := filepath.Join(dir, ".env")
+	err = godotenv.Load(envPath)
 
 	cfg.smtp.host = os.Getenv("SMTP_HOST")
 	cfg.smtp.port, err = strconv.Atoi(os.Getenv("SMTP_PORT"))
