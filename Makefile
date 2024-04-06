@@ -41,6 +41,18 @@ db/migrations/up: confirm
 	@echo 'Running up migrations...'
 	migrate -path ./migrations/ -database ${DB_DSN} up
 
+## db/migrations/down: apply all down migrations
+.PHONY: db/migrations/down
+db/migrations/down: confirm
+	@echo 'Running down migrations...'
+	migrate -path ./migrations/ -database ${DB_DSN} down
+
+## db/migrations/version: get migration version
+.PHONY: db/migrations/version
+db/migrations/version: 
+	@echo 'Checking migration version'
+	migrate -path ./migrations/ -database ${DB_DSN} version
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #
