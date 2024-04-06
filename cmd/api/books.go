@@ -8,6 +8,18 @@ import (
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
+// createBookHandler godoc
+// @Summary		  Create a Book
+// @Description	create book with fields
+// @Tags			  books
+// @Accept			json
+// @Produce	  	json
+// @Param		  	book	body	   data.Book  true  "Add book"
+// @Success     201   {object} data.Book
+// @Failure     400
+// @Failure     422
+// @Failure     500
+// @Router			/books [post]
 func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Title  string   `json:"title"`
