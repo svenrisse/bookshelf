@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	_ "github.com/svenrisse/bookshelf/docs"
 )
 
 func (app *application) routes() http.Handler {
@@ -12,6 +13,8 @@ func (app *application) routes() http.Handler {
 
 	router.NotFound = http.HandlerFunc(app.notFoundResponse)
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
+
+	router.ServeFiles("/docs/*filepath", http.Dir("docs"))
 
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
 
