@@ -1,0 +1,7 @@
+{
+  email svenrisse0@gmail.com
+}
+
+bookshelf.svenrisse.com {
+  reverse_proxy localhost:4000
+}
