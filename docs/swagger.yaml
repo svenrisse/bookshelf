@@ -1,0 +1,60 @@
+basePath: /v1
+definitions:
+  github_com_svenrisse_bookshelf_internal_data.Book:
+    description: Book information
+    properties:
+      author:
+        example: J.R.R. Tolkien
+        type: string
+      genres:
+        example:
+        - Fantasy
+        - Epic
+        - Children's literature
+        items:
+          type: string
+        type: array
+      id:
+        example: 1
+        type: integer
+      pages:
+        example: 320
+        type: integer
+      title:
+        example: The Hobbit
+        type: string
+      version:
+        example: 1
+        type: integer
+      year:
+        example: 1937
+        type: integer
+    type: object
+host: bookshelf.svenrisse.com
+info:
+  contact:
+    email: svenrisse0@gmail.com
+    name: API Support
+  description: This is the API for the Bookshelf application.
+  title: Bookshelf API
+  version: "1.0"
+paths:
+  /books:
+    post:
+      consumes:
+      - application/json
+      description: create book with fields
+      parameters:
+      - description: Add book
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_data.Book'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a Book
+      tags:
+      - books
+swagger: "2.0"
