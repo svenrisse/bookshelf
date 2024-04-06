@@ -14,3 +14,5 @@
 ui/.next
 ui/node_modules
 ui/next-env.d.ts
+tmp
+bin
