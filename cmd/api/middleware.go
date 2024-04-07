@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/svenrisse/bookshelf/internal/data"
+	"github.com/svenrisse/bookshelf/internal/models"
 	"github.com/svenrisse/bookshelf/internal/validator"
 	"github.com/tomasen/realip"
 	"golang.org/x/time/rate"
@@ -86,7 +86,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		authorizationHeader := r.Header.Get("Authorization")
 
 		if authorizationHeader == "" {
-			r = app.contextSetUser(r, data.AnonymousUser)
+			r = app.contextSetUser(r, models.AnonymousUser)
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -101,14 +101,14 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 
 		v := validator.New()
 
-		if data.ValidateTokenPlaintext(v, token); !v.Valid() {
+		if models.ValidateTokenPlaintext(v, token); !v.Valid() {
 			app.invalidCredentialsResponse(w, r)
 			return
 		}
 
-		user, err := app.models.Users.GetForToken(data.ScopeAuthentication, token)
+		user, err := app.models.Users.GetForToken(models.ScopeAuthentication, token)
 		if err != nil {
-			if errors.Is(err, data.ErrRecordNotFound) {
+			if errors.Is(err, models.ErrRecordNotFound) {
 				app.invalidAuthenticationTokenResponse(w, r)
 				return
 			}

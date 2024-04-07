@@ -1,4 +1,4 @@
-package data
+package models
 
 import (
 	"context"
@@ -12,14 +12,14 @@ import (
 // Book model info
 // @Description Book information
 type Book struct {
-	ID        int64     `json:"id"                example:"1"`
+	ID        int64     `json:"-"`
 	CreatedAt time.Time `json:"-"`
 	Title     string    `json:"title"             example:"The Hobbit"`
 	Author    string    `json:"author"            example:"J.R.R. Tolkien"`
 	Year      int32     `json:"year,omitempty"    example:"1937"`
 	Pages     int32     `json:"pages,omitempty"   example:"320"`
 	Genres    []string  `json:"genres,omitempty"  example:"Fantasy,Epic,Children's literature"`
-	Version   int32     `json:"version,omitempty" example:"1"`
+	Version   int32     `json:"-"`
 }
 
 func ValidateBook(v *validator.Validator, book *Book) {

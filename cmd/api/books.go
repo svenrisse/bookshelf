@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/svenrisse/bookshelf/internal/data"
+	"github.com/svenrisse/bookshelf/internal/models"
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
@@ -14,8 +14,8 @@ import (
 // @Tags			  books
 // @Accept			json
 // @Produce	  	json
-// @Param		  	book	body	   data.Book  true  "Add book"
-// @Success     201   {object} data.Book
+// @Param		  	book	body	   models.Book  true  "Add book"
+// @Success     201   {object} models.Book
 // @Failure     400
 // @Failure     422
 // @Failure     500
@@ -35,7 +35,7 @@ func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	book := &data.Book{
+	book := &models.Book{
 		Title:  input.Title,
 		Author: input.Author,
 		Year:   input.Year,
@@ -45,7 +45,7 @@ func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request
 
 	v := validator.New()
 
-	if data.ValidateBook(v, book); !v.Valid() {
+	if models.ValidateBook(v, book); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}

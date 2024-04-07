@@ -12,13 +12,12 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/svenrisse/bookshelf/internal/data"
 	"github.com/svenrisse/bookshelf/internal/mailer"
+	"github.com/svenrisse/bookshelf/internal/models"
 	"github.com/svenrisse/bookshelf/internal/vcs"
 )
 
@@ -53,9 +52,8 @@ type config struct {
 type application struct {
 	config config
 	logger *slog.Logger
-	models data.Models
+	models models.Models
 	mailer mailer.Mailer
-	wg     sync.WaitGroup
 }
 
 // @title			Bookshelf API
@@ -77,7 +75,7 @@ func main() {
 	envPath := filepath.Join(dir, ".env")
 	err = godotenv.Load(envPath)
 	if err != nil {
-		logger.Error("Cant load .env files")
+		logger.Error("error setting envPath")
 	}
 
 	cfg.smtp.host = os.Getenv("SMTP_HOST")
@@ -149,7 +147,7 @@ func main() {
 	app := application{
 		config: cfg,
 		logger: logger,
-		models: data.NewModels(db),
+		models: models.NewModels(db),
 		mailer: mailer.New(
 			cfg.smtp.host,
 			cfg.smtp.port,
