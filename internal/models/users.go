@@ -96,7 +96,7 @@ func (m UserModel) Insert(user *User) error {
 
 	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&user.ID, &user.CreatedAt, &user.Version)
 	if err != nil {
-		if err.Error() == `pq: duplicate key value violate unique constaint "users_email_key"` {
+		if err.Error() == `pq: duplicate key value violate unique constraint "users_email_key"` {
 			return ErrDuplicateEmail
 		}
 		return err
