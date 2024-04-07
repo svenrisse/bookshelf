@@ -122,9 +122,52 @@
                     }
                 }
             }
+        },
+        "/v1/users/activated": {
+            "put": {
+                "description": "activate an user an get :write permissions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Activate an user account",
+                "parameters": [
+                    {
+                        "description": "TokenPlaintext",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.ActivateUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "github_com_svenrisse_bookshelf_internal_models.ActivateUser": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "2MADKDVCV2VC..."
+                }
+            }
+        },
         "github_com_svenrisse_bookshelf_internal_models.Book": {
             "description": "Book information",
             "type": "object",

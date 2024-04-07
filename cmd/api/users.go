@@ -10,14 +10,14 @@ import (
 )
 
 // registerUserHandler godoc
-// @Summary		  Create a new user account
-// @Description	provide user account data
-// @Tags			  users
-// @Accept			json
-// @Produce	  	json
-// @Param		  	account	body	   models.CreateUser  true  "User account details"
-// @Success     201   {object} models.User
-// @Router			/v1/users [post]
+//	@Summary		Create a new user account
+//	@Description	provide user account data
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			account	body		models.CreateUser	true	"User account details"
+//	@Success		201		{object}	models.User
+//	@Router			/v1/users [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	input := models.CreateUser{}
 
@@ -87,6 +87,15 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+// activateUserHandler godoc
+//	@Summary		Activate an user account
+//	@Description	activate an user an get :write permissions
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			account	body		models.ActivateUser	true	"TokenPlaintext"
+//	@Success		200		{object}	models.User
+//	@Router			/v1/users/activated [put]
 func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		TokenPlaintext string `json:"token"`

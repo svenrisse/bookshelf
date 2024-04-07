@@ -1,5 +1,11 @@
 basePath: /v1
 definitions:
+  github_com_svenrisse_bookshelf_internal_models.ActivateUser:
+    properties:
+      token:
+        example: 2MADKDVCV2VC...
+        type: string
+    type: object
   github_com_svenrisse_bookshelf_internal_models.Book:
     description: Book information
     properties:
@@ -147,6 +153,28 @@ paths:
           schema:
             $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.User'
       summary: Create a new user account
+      tags:
+      - users
+  /v1/users/activated:
+    put:
+      consumes:
+      - application/json
+      description: activate an user an get :write permissions
+      parameters:
+      - description: TokenPlaintext
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.ActivateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.User'
+      summary: Activate an user account
       tags:
       - users
 swagger: "2.0"
