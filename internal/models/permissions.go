@@ -23,6 +23,11 @@ type PermissionsModel struct {
 	DB *sql.DB
 }
 
+type PermissionsModelInterface interface {
+	GetAllForUser(userID int64) (Permissions, error)
+	AddForUser(userID int64, codes ...string) error
+}
+
 func (m PermissionsModel) GetAllForUser(userID int64) (Permissions, error) {
 	query := `
     SELECT permissions.code

@@ -45,6 +45,10 @@ type BookModel struct {
 	DB *sql.DB
 }
 
+type BookModelInterface interface {
+	Insert(book *Book) error
+}
+
 func (b BookModel) Insert(book *Book) error {
 	query := `
     INSERT INTO books (title, author, year, pages, genres)

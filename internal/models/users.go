@@ -31,8 +31,19 @@ type CreateUser struct {
 	Password string `json:"password" example:"pa55word"`
 }
 
+type ActivateUser struct {
+	TokenPlaintext string `json:"token" example:"2MADKDVCV2VC..."`
+}
+
 type UserModel struct {
 	DB *sql.DB
+}
+
+type UserModelInterface interface {
+	Insert(user *User) error
+	GetByEmail(email string) (*User, error)
+	Update(user *User) error
+	GetForToken(tokenScope, tokenPlaintext string) (*User, error)
 }
 
 type password struct {
