@@ -53,6 +53,14 @@ db/migrations/version:
 	@echo 'Checking migration version'
 	migrate -path ./migrations/ -database ${DB_DSN} version
 
+## db/migrations/force: force to migration version
+.PHONY: db/migrations/force
+db/migrations/force: 
+	@echo 'forcing migration version ${version}'
+	migrate -path ./migrations/ -database ${DB_DSN} force ${version}
+
+
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #
@@ -86,7 +94,7 @@ vendor:
 
 ## build/api: build the cmd/api application
 .PHONY: build/api
-build/api:
+build/api: build/swagger
 	@echo 'Building cmd/api...'
 	go build -ldflags='-s' -o=./bin/api ./cmd/api
 	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/linux_amd64/api ./cmd/api
