@@ -16,15 +16,11 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		Password string `json:"Password"`
 	}
 
-	app.logger.Info("start reading...")
-
 	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
-
-	app.logger.Info("finished reading")
 
 	user := &models.User{
 		Name:      input.Name,
@@ -32,15 +28,11 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		Activated: false,
 	}
 
-	app.logger.Info("finished setting user")
-
 	err = user.Password.Set(input.Password)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
-
-	app.logger.Info("finish setting pw")
 
 	v := validator.New()
 
@@ -48,8 +40,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
-
-	app.logger.Info("finish validating user")
 
 	err = app.models.Users.Insert(user)
 	if err != nil {
@@ -61,8 +51,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		}
 		return
 	}
-
-	app.logger.Info("finish inserting user")
 
 	err = app.models.Permissions.AddForUser(user.ID, "books:read")
 	if err != nil {
