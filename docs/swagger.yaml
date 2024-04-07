@@ -33,12 +33,37 @@ definitions:
         example: pa55word
         type: string
     type: object
+  github_com_svenrisse_bookshelf_internal_models.CreateUser:
+    properties:
+      email:
+        example: testuser@testing.com
+        type: string
+      name:
+        example: testuser
+        type: string
+      password:
+        example: pa55word
+        type: string
+    type: object
   github_com_svenrisse_bookshelf_internal_models.Token:
     description: Token information
     properties:
       expiry:
         type: string
       token:
+        type: string
+    type: object
+  github_com_svenrisse_bookshelf_internal_models.User:
+    properties:
+      activated:
+        type: boolean
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
     type: object
 host: bookshelf.svenrisse.com
@@ -102,4 +127,26 @@ paths:
       summary: Create a bearer token
       tags:
       - tokens
+  /v1/users:
+    post:
+      consumes:
+      - application/json
+      description: provide user account data
+      parameters:
+      - description: User account details
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.User'
+      summary: Create a new user account
+      tags:
+      - users
 swagger: "2.0"

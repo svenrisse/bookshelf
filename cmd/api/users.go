@@ -9,12 +9,17 @@ import (
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
+// registerUserHandler godoc
+// @Summary		  Create a new user account
+// @Description	provide user account data
+// @Tags			  users
+// @Accept			json
+// @Produce	  	json
+// @Param		  	account	body	   models.CreateUser  true  "User account details"
+// @Success     201   {object} models.User
+// @Router			/v1/users [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"Password"`
-	}
+	input := models.CreateUser{}
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
@@ -125,6 +130,12 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	err = app.models.Tokens.DeleteAllForUser(models.ScopeActivation, user.ID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.models.Permissions.AddForUser(user.ID, "books:write")
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return

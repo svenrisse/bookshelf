@@ -25,6 +25,12 @@ type User struct {
 	Version   int       `json:"-"`
 }
 
+type CreateUser struct {
+	Name     string `json:"name" example:"testuser"`
+	Email    string `json:"email" example:"testuser@testing.com"`
+	Password string `json:"password" example:"pa55word"`
+}
+
 type UserModel struct {
 	DB *sql.DB
 }

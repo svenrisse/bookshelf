@@ -94,6 +94,40 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/users": {
+            "post": {
+                "description": "provide user account data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a new user account",
+                "parameters": [
+                    {
+                        "description": "User account details",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -143,6 +177,23 @@ const docTemplate = `{
                 }
             }
         },
+        "github_com_svenrisse_bookshelf_internal_models.CreateUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "testuser@testing.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "testuser"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "pa55word"
+                }
+            }
+        },
         "github_com_svenrisse_bookshelf_internal_models.Token": {
             "description": "Token information",
             "type": "object",
@@ -151,6 +202,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_svenrisse_bookshelf_internal_models.User": {
+            "type": "object",
+            "properties": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }

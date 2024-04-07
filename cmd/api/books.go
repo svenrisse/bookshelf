@@ -19,7 +19,7 @@ import (
 // @Failure     400
 // @Failure     422
 // @Failure     500
-// @Router			/books [post]
+// @Router			/v1/books [post]
 func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Title  string   `json:"title"`
