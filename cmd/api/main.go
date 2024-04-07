@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -54,6 +55,7 @@ type application struct {
 	logger *slog.Logger
 	models models.Models
 	mailer mailer.Mailer
+	wg     sync.WaitGroup
 }
 
 // @title			Bookshelf API
