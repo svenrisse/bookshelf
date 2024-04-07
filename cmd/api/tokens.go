@@ -20,10 +20,7 @@ import (
 // @Success     201   {object} models.Token
 // @Router			/v1/tokens/authentication [post]
 func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	input := models.CreateToken{}
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
