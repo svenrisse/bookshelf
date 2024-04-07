@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/books": {
+        "/v1/books": {
             "post": {
                 "description": "create book with fields",
                 "consumes": [
@@ -38,7 +38,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_data.Book"
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.Book"
                         }
                     }
                 ],
@@ -46,7 +46,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_data.Book"
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.Book"
                         }
                     },
                     "400": {
@@ -60,10 +60,44 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/tokens/authentication": {
+            "post": {
+                "description": "create a token for an account necessary for using certain endpoints\naccount needs to be created, and activated!",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tokens"
+                ],
+                "summary": "Create a bearer token",
+                "parameters": [
+                    {
+                        "description": "Add book",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.Token"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "github_com_svenrisse_bookshelf_internal_data.Book": {
+        "github_com_svenrisse_bookshelf_internal_models.Book": {
             "description": "Book information",
             "type": "object",
             "properties": {
@@ -82,10 +116,6 @@ const docTemplate = `{
                         "Children's literature"
                     ]
                 },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
                 "pages": {
                     "type": "integer",
                     "example": 320
@@ -94,13 +124,34 @@ const docTemplate = `{
                     "type": "string",
                     "example": "The Hobbit"
                 },
-                "version": {
-                    "type": "integer",
-                    "example": 1
-                },
                 "year": {
                     "type": "integer",
                     "example": 1937
+                }
+            }
+        },
+        "github_com_svenrisse_bookshelf_internal_models.CreateToken": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "example@example.net"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "pa55word"
+                }
+            }
+        },
+        "github_com_svenrisse_bookshelf_internal_models.Token": {
+            "description": "Token information",
+            "type": "object",
+            "properties": {
+                "expiry": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         }

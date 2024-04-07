@@ -16,12 +16,19 @@ const (
 	ScopeAuthentication = "authentication"
 )
 
+// Token model info
+// @Description Token information
 type Token struct {
 	Plaintext string    `json:"token"`
 	Hash      []byte    `json:"-"`
 	UserID    int64     `json:"-"`
 	Expiry    time.Time `json:"expiry"`
 	Scope     string    `json:"-"`
+}
+
+type CreateToken struct {
+	Email    string `json:"email" example:"example@example.net"`
+	Password string `json:"password" example:"pa55word"`
 }
 
 func generateToken(userID int64, ttl time.Duration, scope string) (*Token, error) {

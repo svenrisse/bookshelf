@@ -1,6 +1,6 @@
 basePath: /v1
 definitions:
-  github_com_svenrisse_bookshelf_internal_data.Book:
+  github_com_svenrisse_bookshelf_internal_models.Book:
     description: Book information
     properties:
       author:
@@ -14,21 +14,32 @@ definitions:
         items:
           type: string
         type: array
-      id:
-        example: 1
-        type: integer
       pages:
         example: 320
         type: integer
       title:
         example: The Hobbit
         type: string
-      version:
-        example: 1
-        type: integer
       year:
         example: 1937
         type: integer
+    type: object
+  github_com_svenrisse_bookshelf_internal_models.CreateToken:
+    properties:
+      email:
+        example: example@example.net
+        type: string
+      password:
+        example: pa55word
+        type: string
+    type: object
+  github_com_svenrisse_bookshelf_internal_models.Token:
+    description: Token information
+    properties:
+      expiry:
+        type: string
+      token:
+        type: string
     type: object
 host: bookshelf.svenrisse.com
 info:
@@ -39,7 +50,7 @@ info:
   title: Bookshelf API
   version: "1.0"
 paths:
-  /books:
+  /v1/books:
     post:
       consumes:
       - application/json
@@ -50,14 +61,14 @@ paths:
         name: book
         required: true
         schema:
-          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_data.Book'
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Book'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_data.Book'
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Book'
         "400":
           description: Bad Request
         "422":
@@ -67,4 +78,28 @@ paths:
       summary: Create a Book
       tags:
       - books
+  /v1/tokens/authentication:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        create a token for an account necessary for using certain endpoints
+        account needs to be created, and activated!
+      parameters:
+      - description: Add book
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateToken'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Token'
+      summary: Create a bearer token
+      tags:
+      - tokens
 swagger: "2.0"
