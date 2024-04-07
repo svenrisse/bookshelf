@@ -8,14 +8,11 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/svenrisse/bookshelf/internal/mailer"
 	"github.com/svenrisse/bookshelf/internal/models"
@@ -32,6 +29,7 @@ type config struct {
 		maxOpenConns int
 		maxIdleConns int
 		maxIdleTime  time.Duration
+		ssl          string
 	}
 	limiter struct {
 		rps     float64
@@ -70,53 +68,29 @@ func main() {
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		logger.Error(err.Error())
-	}
-	envPath := filepath.Join(dir, ".env")
-	err = godotenv.Load(envPath)
-	if err != nil {
-		logger.Error("error setting envPath")
-	}
+	flag.IntVar(&cfg.port, "port", 4000, "API server port")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 
-	cfg.smtp.host = os.Getenv("SMTP_HOST")
-	cfg.smtp.port, err = strconv.Atoi(os.Getenv("SMTP_PORT"))
-	if err != nil {
-		logger.Error("Error converting smtp port")
-	}
-	cfg.smtp.username = os.Getenv("SMTP_USERNAME")
-	cfg.smtp.password = os.Getenv("SMTP_PASSWORD")
-	cfg.smtp.sender = os.Getenv("SMTP_SENDER")
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "", "PostgreSQL DSN")
 
-	cfg.port, err = strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		logger.Error("Error converting port env var")
-	}
-	cfg.env = os.Getenv("ENV")
-
-	cfg.db.dsn = os.Getenv("DB_DSN")
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
-	flag.DurationVar(
-		&cfg.db.maxIdleTime,
-		"db-max-idle-time",
-		15*time.Minute,
-		"PostgreSQL max connection idle time",
-	)
+	flag.DurationVar(&cfg.db.maxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgreSQL max connection idle time")
 
-	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate Limiter maximum requests per second")
-	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate Limiter maximum burst")
 	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", true, "Enable rate limiter")
+	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
+	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter maximum burst")
 
-	flag.Func(
-		"cors-trusted-origins",
-		"Trusted CORS origins (space separated)",
-		func(val string) error {
-			cfg.cors.trustedOrigins = strings.Fields(val)
-			return nil
-		},
-	)
+	flag.StringVar(&cfg.smtp.host, "smtp-host", "sandbox.smtp.mailtrap.io", "SMTP host")
+	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "SMTP port")
+	flag.StringVar(&cfg.smtp.username, "smtp-username", "", "SMTP username")
+	flag.StringVar(&cfg.smtp.password, "smtp-password", "", "SMTP password")
+	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Bookshelf <no-reply@bookshelf.svenrisse.com>", "SMTP sender")
+
+	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
+		cfg.cors.trustedOrigins = strings.Fields(val)
+		return nil
+	})
 
 	displayVersion := flag.Bool("version", false, "Display version and exit")
 
