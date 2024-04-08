@@ -21,32 +21,22 @@ import (
 // @Failure     500
 // @Router			/v1/books [post]
 func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Title  string   `json:"title"`
-		Author string   `json:"author"`
-		Year   int32    `json:"year"`
-		Pages  int32    `json:"pages"`
-		Genres []string `json:"genres"`
-	}
-
-	err := app.readJSON(w, r, &input)
+	book := &models.Book{}
+	err := app.readJSON(w, r, &book)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
-	book := &models.Book{
-		Title:  input.Title,
-		Author: input.Author,
-		Year:   input.Year,
-		Pages:  input.Pages,
-		Genres: input.Genres,
-	}
-
 	v := validator.New()
-
 	if models.ValidateBook(v, book); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.models.Books.Insert(book)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
 		return
 	}
 
