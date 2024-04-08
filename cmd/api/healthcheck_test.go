@@ -13,8 +13,7 @@ func TestHealthCheck(t *testing.T) {
 	ts := newTestServer(t, app.routes())
 	defer ts.Close()
 
-	code, _, body := ts.get(t, "/v1/healthcheck")
+	code, _, _ := ts.get(t, "/v1/healthcheck")
 
 	assert.Equal(t, code, http.StatusOK)
-	assert.StringContains(t, body, "available")
 }

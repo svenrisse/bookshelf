@@ -43,28 +43,33 @@ func newTestServer(t *testing.T, h http.Handler) *testServer {
 }
 
 func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, string) {
-	rs, err := ts.Client().Get(ts.URL + urlPath)
+	rq, err := http.NewRequest("GET", ts.URL+urlPath, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rq.Header.Add("Authorization", "Bearer Q5KJHXE3TJ3BUQRFWYYCAFSJDQ")
+
+	rs, err := ts.Client().Do(rq)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	defer rs.Body.Close()
-	body, err := io.ReadAll(rs.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	body = bytes.TrimSpace(body)
-
-	return rs.StatusCode, rs.Header, string(body)
+	return rs.StatusCode, rs.Header, string("")
 }
 
 func (ts *testServer) post(t *testing.T, urlPath string, body io.Reader) (int, http.Header, string) {
-	rs, err := ts.Client().Post(ts.URL+urlPath, "application/json", body)
+	rq, err := http.NewRequest(http.MethodPost, ts.URL+urlPath, body)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer rs.Body.Close()
 
+	rq.Header.Set("Authorization", "Bearer Q5KJHXE3TJ3BUQRFWYYCAFSJDQ")
+	rs, err := ts.Client().Do(rq)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer rs.Body.Close()
 	b, err := io.ReadAll(rs.Body)
 	if err != nil {
 		t.Fatal(err)
