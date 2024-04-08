@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/svenrisse/bookshelf/internal/mailer"
@@ -27,7 +26,7 @@ type testServer struct {
 }
 
 func newTestServer(t *testing.T, h http.Handler) *testServer {
-	ts := httptest.NewTLSServer(h)
+	ts := httptest.NewServer(h)
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -59,20 +58,17 @@ func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, strin
 	return rs.StatusCode, rs.Header, string(body)
 }
 
-func (ts *testServer) postForm(t *testing.T, urlPath string, form url.Values) (int, http.Header, string) {
-	rs, err := ts.Client().PostForm(ts.URL+urlPath, form)
+func (ts *testServer) post(t *testing.T, urlPath string, body io.Reader) (int, http.Header, string) {
+	rs, err := ts.Client().Post(ts.URL+urlPath, "application/json", body)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Read the response body from the test server.
 	defer rs.Body.Close()
-	body, err := io.ReadAll(rs.Body)
+
+	b, err := io.ReadAll(rs.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
-	body = bytes.TrimSpace(body)
-
-	// Return the response status, headers and body.
-	return rs.StatusCode, rs.Header, string(body)
+	b = bytes.TrimSpace(b)
+	return rs.StatusCode, rs.Header, string(b)
 }
