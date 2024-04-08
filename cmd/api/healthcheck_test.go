@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/svenrisse/bookshelf/internal/assert"
@@ -9,11 +10,11 @@ import (
 
 func TestHealthCheck(t *testing.T) {
 	app := newTestApplication(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/healthcheck", nil)
+	w := httptest.NewRecorder()
+	req.Header.Set("Authorization", "Bearer Q5KJHXE3TJ3BUQRFWYYCAFSJDQ")
+	app.healthcheckHandler(w, req)
 
-	ts := newTestServer(t, app.routes())
-	defer ts.Close()
-
-	code, _, _ := ts.get(t, "/v1/healthcheck")
-
-	assert.Equal(t, code, http.StatusOK)
+	resp := w.Result()
+	assert.Equal(t, resp.StatusCode, http.StatusOK)
 }
