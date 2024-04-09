@@ -7,7 +7,10 @@ import (
 )
 
 func NewTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("postgres", "test_web:pass@/test_snippetbox?parseTime=true&multiStatements=true")
+	db, err := sql.Open(
+		"postgres",
+		"postgres://testuser:pa55word@127.0.0.1/test_bookshelf?sslmode=disable",
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
