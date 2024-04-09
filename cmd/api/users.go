@@ -10,6 +10,7 @@ import (
 )
 
 // registerUserHandler godoc
+//
 //	@Summary		Create a new user account
 //	@Description	provide user account data
 //	@Tags			users
@@ -88,6 +89,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 }
 
 // activateUserHandler godoc
+//
 //	@Summary		Activate an user account
 //	@Description	activate an user an get :write permissions
 //	@Tags			users

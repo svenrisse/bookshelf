@@ -9,17 +9,18 @@ import (
 )
 
 // createBookHandler godoc
-// @Summary		  Create a Book
-// @Description	create book with fields
-// @Tags			  books
-// @Accept			json
-// @Produce	  	json
-// @Param		  	book	body	   models.Book  true  "Add book"
-// @Success     201   {object} models.Book
-// @Failure     400
-// @Failure     422
-// @Failure     500
-// @Router			/v1/books [post]
+//
+//	@Summary		Create a Book
+//	@Description	create book with fields
+//	@Tags			books
+//	@Accept			json
+//	@Produce		json
+//	@Param			book	body		models.Book	true	"Add book"
+//	@Success		201		{object}	models.Book
+//	@Failure		400
+//	@Failure		422
+//	@Failure		500
+//	@Router			/v1/books [post]
 func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request) {
 	book := &models.Book{}
 	err := app.readJSON(w, r, &book)

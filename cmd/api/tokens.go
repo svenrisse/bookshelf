@@ -10,15 +10,16 @@ import (
 )
 
 // createAuthenticationTokenHandler godoc
-// @Summary		  Create a bearer token
-// @Description	create a token for an account necessary for using certain endpoints
-// @Description	account needs to be created, and activated!
-// @Tags			  tokens
-// @Accept			json
-// @Produce	  	json
-// @Param		  	email	body	   models.CreateToken  true  "Add book"
-// @Success     201   {object} models.Token
-// @Router			/v1/tokens/authentication [post]
+//
+//	@Summary		Create a bearer token
+//	@Description	create a token for an account necessary for using certain endpoints
+//	@Description	account needs to be created, and activated!
+//	@Tags			tokens
+//	@Accept			json
+//	@Produce		json
+//	@Param			email	body		models.CreateToken	true	"Add book"
+//	@Success		201		{object}	models.Token
+//	@Router			/v1/tokens/authentication [post]
 func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, r *http.Request) {
 	input := models.CreateToken{}
 

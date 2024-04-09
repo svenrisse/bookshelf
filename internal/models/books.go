@@ -14,11 +14,11 @@ import (
 type Book struct {
 	ID        int64     `json:"-"`
 	CreatedAt time.Time `json:"-"`
-	Title     string    `json:"title"             example:"The Hobbit"`
-	Author    string    `json:"author"            example:"J.R.R. Tolkien"`
-	Year      int32     `json:"year,omitempty"    example:"1937"`
-	Pages     int32     `json:"pages,omitempty"   example:"320"`
-	Genres    []string  `json:"genres,omitempty"  example:"Fantasy,Epic,Children's literature"`
+	Title     string    `json:"title"   example:"The Hobbit"`
+	Author    string    `json:"author"  example:"J.R.R. Tolkien"`
+	Year      int32     `json:"year"    example:"1937"`
+	Pages     int32     `json:"pages"   example:"320"`
+	Genres    []string  `json:"genres"  example:"Fantasy,Epic,Children's literature"`
 	Version   int32     `json:"-"`
 }
 
@@ -37,7 +37,7 @@ func ValidateBook(v *validator.Validator, book *Book) {
 
 	v.Check(book.Genres != nil, "genres", "must be provided")
 	v.Check(len(book.Genres) >= 0, "genres", "must contain atleast 1 genre")
-	v.Check(len(book.Genres) <= 10, "genres", "must not conatin more than 10 genres")
+	v.Check(len(book.Genres) <= 10, "genres", "must not contain more than 10 genres")
 	v.Check(validator.Unique(book.Genres), "genres", "must not contain duplicate values")
 }
 
