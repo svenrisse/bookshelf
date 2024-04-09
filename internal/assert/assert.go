@@ -1,6 +1,7 @@
 package assert
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -26,5 +27,20 @@ func NilError(t *testing.T, actual error) {
 
 	if actual != nil {
 		t.Errorf("got: %v; expected: nil", actual)
+	}
+}
+
+func DeepEqual(t *testing.T, actual, expected map[string]string) {
+	t.Helper()
+
+	if actual == nil {
+		if len(expected) != 0 {
+			t.Errorf("got: %v; expected: %v", actual, expected)
+		}
+		return
+	}
+
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("got: %v; want: %v", actual, expected)
 	}
 }
