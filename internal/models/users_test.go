@@ -6,8 +6,50 @@ import (
 	"github.com/svenrisse/bookshelf/internal/assert"
 )
 
+func TestUserModelInsert(t *testing.T) {
+	validUser := User{
+		Name:  "Insert Jones",
+		Email: "insertTest@example.com",
+		Password: password{
+			hash: NewTestHashPassword(t, "pa55word"),
+		},
+		Activated: true,
+	}
+	tests := []struct {
+		name  string
+		user  User
+		error string
+	}{
+		{name: "Valid User", user: validUser, error: ""},
+		{
+			name: "Duplicate Email", user: User{
+				Name:      validUser.Name,
+				Email:     "alice@example.com",
+				Password:  validUser.Password,
+				Activated: validUser.Activated,
+			}, error: "pq: duplicate key value violates unique constraint \"users_email_key\"",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+
+			m := UserModel{db}
+
+			err := m.Insert(&tt.user)
+
+			if len(tt.error) == 0 {
+				assert.NilError(t, err)
+				return
+			}
+
+			assert.StringContains(t, err.Error(), tt.error)
+		})
+	}
+}
+
 func TestUserModelExists(t *testing.T) {
-	// Set up a suite of table-driven tests and expected results.
 	tests := []struct {
 		name   string
 		userID int
