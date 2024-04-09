@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"os"
 	"testing"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func NewTestDB(t *testing.T) *sql.DB {
@@ -40,4 +42,13 @@ func NewTestDB(t *testing.T) *sql.DB {
 	})
 
 	return db
+}
+
+func NewTestHashPassword(t *testing.T, password string) []byte {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return bytes
 }
