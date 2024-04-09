@@ -9,21 +9,52 @@ import (
 
 	"github.com/svenrisse/bookshelf/internal/assert"
 	"github.com/svenrisse/bookshelf/internal/models"
+	"github.com/svenrisse/bookshelf/internal/validator"
 )
+
+var validBook = models.Book{
+	Title:  "The Hobbit",
+	Author: "J.R.R. Tolkien",
+	Year:   1932,
+	Pages:  300,
+	Genres: []string{"Fantasy", "Children's Literature"},
+}
+
+func TestValidateBookHandler(t *testing.T) {
+	tests := []struct {
+		book      models.Book
+		name      string
+		wantError map[string]string
+	}{
+		{
+			name:      "valid Book",
+			book:      validBook,
+			wantError: nil,
+		},
+		{
+			name: "invalid Title", book: models.Book{
+				Title:  "",
+				Author: validBook.Author,
+				Year:   validBook.Year,
+				Pages:  validBook.Pages,
+				Genres: validBook.Genres,
+			}, wantError: map[string]string{"title": "must be provided"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := validator.New()
+			models.ValidateBook(v, &tt.book)
+			assert.DeepEqual(t, tt.wantError, v.Errors)
+		})
+	}
+}
 
 func TestCreateBookHandler(t *testing.T) {
 	app := newTestApplication(t)
 
 	w := httptest.NewRecorder()
-
-	validBook := models.Book{
-		Title:  "The Hobbit",
-		Author: "J.R.R. Tolkien",
-		Year:   1932,
-		Pages:  300,
-		Genres: []string{"Fantasy", "Children's Literature"},
-	}
-
 	tests := []struct {
 		book     models.Book
 		name     string
@@ -31,14 +62,8 @@ func TestCreateBookHandler(t *testing.T) {
 		wantBody string
 	}{
 		{
-			name: "Valid Request",
-			book: models.Book{
-				Title:  validBook.Title,
-				Author: validBook.Author,
-				Year:   validBook.Year,
-				Pages:  validBook.Pages,
-				Genres: validBook.Genres,
-			},
+			name:     "Valid Request",
+			book:     validBook,
 			wantCode: http.StatusCreated,
 		},
 	}
