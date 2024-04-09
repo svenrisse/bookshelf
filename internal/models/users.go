@@ -26,8 +26,8 @@ type User struct {
 }
 
 type CreateUser struct {
-	Name     string `json:"name" example:"testuser"`
-	Email    string `json:"email" example:"testuser@testing.com"`
+	Name     string `json:"name"     example:"testuser"`
+	Email    string `json:"email"    example:"testuser@testing.com"`
 	Password string `json:"password" example:"pa55word"`
 }
 
@@ -122,6 +122,15 @@ func (m UserModel) Insert(user *User) error {
 	return nil
 }
 
+func (m *UserModel) Exists(id int) (bool, error) {
+	var exists bool
+
+	stmt := "SELECT EXISTS(SELECT true FROM users WHERE id = $1)"
+
+	err := m.DB.QueryRow(stmt, id).Scan(&exists)
+	return exists, err
+}
+
 func (m UserModel) GetByEmail(email string) (*User, error) {
 	query := `
         SELECT id, created_at, name, email, password_hash, activated, version
@@ -207,7 +216,8 @@ func (m UserModel) GetForToken(tokenScope, tokenPlaintext string) (*User, error)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&user.ID, &user.CreatedAt, &user.Name, &user.Email, &user.Password.hash, &user.Activated, &user.Version)
+	err := m.DB.QueryRowContext(ctx, query, args...).
+		Scan(&user.ID, &user.CreatedAt, &user.Name, &user.Email, &user.Password.hash, &user.Activated, &user.Version)
 	if err != nil {
 		if errors.Is(err, ErrRecordNotFound) {
 			return nil, ErrRecordNotFound
