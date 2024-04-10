@@ -19,18 +19,11 @@ jobs:
         uses: actions/checkout@main
         with:
           go-version: "1.22.x"
-      - name: Install dependencies
-        run: |
-          go get github.com/swaggo/swag/cmd/swag@latest
-
+    
       - name: audit application
+        uses: github.com/swaggo/swag/cmd/swag@latest
         run: |
           go fmt -mod=readonly ./...
           swag fmt
           go vet ./...
           go test -v ./...
-
-      - name: Build
-        run: |
-          swag init --parseDependency -g cmd/api/main.go
-          go build -ldflags='-s' -o='./bin/api ./cmd/api
