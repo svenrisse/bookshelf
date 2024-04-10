@@ -19,7 +19,7 @@ Type=exec
 User=bookshelf 
 Group=bookshelf
 EnvironmentFile=/etc/environment
-ExecStart=/home/bookshelf/bookshelf/api 
+ExecStart=/home/bookshelf/bookshelf/api -env=production -db-dsn=${DB_DSN} -smtp-username=${SMTP_USERNAME} -smtp-password=${SMTP_PASSWORD}
 
 # Automatically restart the service after a 5-second wait if it exits with a non-zero 
 # exit code. If it restarts more than 5 times in 600 seconds, then the rate limit we
