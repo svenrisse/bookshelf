@@ -49,6 +49,7 @@ type BookModel struct {
 type BookModelInterface interface {
 	Insert(book *Book) error
 	Get(id int64) (*Book, error)
+	Update(book *Book) error
 }
 
 func (b BookModel) Insert(book *Book) error {
@@ -90,4 +91,35 @@ func (b BookModel) Get(id int64) (*Book, error) {
 	}
 
 	return &book, nil
+}
+
+func (b BookModel) Update(book *Book) error {
+	query := `
+    UPDATE books
+    SET title = $1, author = $2, year = $3, pages = $4, genres = $5, version = version + 1
+    WHERE id $6 AND version = $7
+    RETURNING version`
+
+	args := []any{
+		book.Title,
+		book.Author,
+		book.Year,
+		book.Pages,
+		pq.Array(book.Genres),
+		book.ID,
+		book.Version,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := b.DB.QueryRowContext(ctx, query, args...).Scan(&book.Version)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrEditConflict
+		}
+		return err
+	}
+
+	return nil
 }

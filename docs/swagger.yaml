@@ -135,6 +135,36 @@ paths:
       summary: Get a Book
       tags:
       - books
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Provide Fields to change
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Book'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Book'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "409":
+          description: Conflict
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update a book by providing new values
+      tags:
+      - books
   /v1/tokens/authentication:
     post:
       consumes:
