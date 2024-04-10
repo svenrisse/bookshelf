@@ -19,9 +19,11 @@ jobs:
         uses: actions/checkout@main
         with:
           go-version: "1.22.x"
-    
+      - name: install dependencies
+        run: |
+          go install github.com/swaggo/swag/cmd/swag@latest
+
       - name: audit application
-        uses: github.com/swaggo/swag/cmd/swag@latest
         run: |
           go fmt -mod=readonly ./...
           swag fmt
