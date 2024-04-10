@@ -109,6 +109,32 @@ paths:
       summary: Create a Book
       tags:
       - books
+  /v1/books/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Book'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Get a Book
+      tags:
+      - books
   /v1/tokens/authentication:
     post:
       consumes:

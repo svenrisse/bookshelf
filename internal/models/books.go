@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
@@ -12,13 +13,13 @@ import (
 // Book model info
 // @Description Book information
 type Book struct {
-	ID        int64     `json:"-"`
+	ID        int64     `json:"-"      example:"5"`
 	CreatedAt time.Time `json:"-"`
-	Title     string    `json:"title"   example:"The Hobbit"`
-	Author    string    `json:"author"  example:"J.R.R. Tolkien"`
-	Year      int32     `json:"year"    example:"1937"`
-	Pages     int32     `json:"pages"   example:"320"`
-	Genres    []string  `json:"genres"  example:"Fantasy,Epic,Children's literature"`
+	Title     string    `json:"title"  example:"The Hobbit"`
+	Author    string    `json:"author" example:"J.R.R. Tolkien"`
+	Year      int32     `json:"year"   example:"1937"`
+	Pages     int32     `json:"pages"  example:"320"`
+	Genres    []string  `json:"genres" example:"Fantasy,Epic,Children's literature"`
 	Version   int32     `json:"-"`
 }
 
@@ -47,6 +48,7 @@ type BookModel struct {
 
 type BookModelInterface interface {
 	Insert(book *Book) error
+	Get(id int64) (*Book, error)
 }
 
 func (b BookModel) Insert(book *Book) error {
@@ -61,4 +63,31 @@ func (b BookModel) Insert(book *Book) error {
 	defer cancel()
 
 	return b.DB.QueryRowContext(ctx, query, args...).Scan(&book.ID, &book.CreatedAt, &book.Version)
+}
+
+func (b BookModel) Get(id int64) (*Book, error) {
+	if id < 1 {
+		return nil, ErrRecordNotFound
+	}
+
+	query := `
+    SELECT id, created_at, title, author, year, pages, genres, version 
+    FROM books
+    WHERE id = $1`
+
+	var book Book
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := b.DB.QueryRowContext(ctx, query, id).
+		Scan(&book.ID, &book.CreatedAt, &book.Title, &book.Author, &book.Year, &book.Pages, &book.Genres, &book.Version)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return &book, nil
 }

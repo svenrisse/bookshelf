@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -45,6 +46,41 @@ func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request
 	headers.Set("Location", fmt.Sprintf("/v1/books/%d", book.ID))
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"book": book}, headers)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
+
+// getBookHandler godoc
+//
+//	@Summary		Get a Book
+//	@Tags			  books
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Book ID"
+//	@Success		200		{object}	models.Book
+//	@Failure		400
+//	@Failure		404
+//	@Failure		500
+//	@Router			/v1/books/{id} [get]
+func (app *application) getBookHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	book, err := app.models.Books.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrRecordNotFound) {
+			app.notFoundResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"book": book}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
