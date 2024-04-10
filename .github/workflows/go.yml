@@ -5,35 +5,32 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    - name: checkout repo
-      uses: actions/checkout@main
-      with:
-        go-version: '1.22.x'
-    - name: Install dependencies
-      run: |
-        go get github.com/swaggo/swag/cmd/swag@latest
-    
-    - name: audit application
-      run: |
-        go fmt ./...
-        swag fmt
-        go vet ./...
-        go test -v ./...
+      - uses: actions/checkout@v3
+      - name: checkout repo
+        uses: actions/checkout@main
+        with:
+          go-version: "1.22.x"
+      - name: Install dependencies
+        run: |
+          go get github.com/swaggo/swag/cmd/swag@latest
 
-    - name: Build
-      run: |
-        swag init --parseDependency -g cmd/api/main.go
-        go build -ldflags='-s' -o='./bin/api ./cmd/api
+      - name: audit application
+        run: |
+          go fmt -mod=readonly ./...
+          swag fmt
+          go vet ./...
+          go test -v ./...
 
-   
+      - name: Build
+        run: |
+          swag init --parseDependency -g cmd/api/main.go
+          go build -ldflags='-s' -o='./bin/api ./cmd/api
