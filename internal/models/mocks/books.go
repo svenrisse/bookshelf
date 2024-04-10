@@ -22,3 +22,11 @@ type BookModel struct{}
 func (m *BookModel) Insert(book *models.Book) error {
 	return nil
 }
+
+func (m *BookModel) Get(id int64) (book *models.Book, err error) {
+	return &mockBook, nil
+}
+
+func (m *BookModel) Update(book *models.Book) error {
+	return nil
+}
