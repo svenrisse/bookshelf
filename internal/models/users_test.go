@@ -136,3 +136,29 @@ func TestUserModelExists(t *testing.T) {
 		})
 	}
 }
+
+func TestUserGetByEmail(t *testing.T) {
+	tests := []struct {
+		name  string
+		email string
+		error string
+	}{
+		{name: "Valid Email", email: "alice@example.com", error: ""},
+		{name: "Invalid Email", email: "aliceexample.com", error: "record not found"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+			m := UserModel{db}
+
+			_, err := m.GetByEmail(tt.email)
+			if err != nil {
+				t.Log(err.Error())
+				assert.Equal(t, err.Error(), tt.error)
+				return
+			}
+			assert.NilError(t, err)
+		})
+	}
+}
