@@ -118,7 +118,7 @@ production/connect:
 
 ## production/deploy/api: deploy the api to production
 .PHONY: production/deploy/api
-production/deploy/api:
+production/deploy/api: build/api
 	rsync -P ./bin/linux_amd64/api ${PROD_USER}@${PROD_IP}:~/bookshelf/
 	rsync -rP --delete ./migrations ${PROD_USER}@${PROD_IP}:~/bookshelf/
 	rsync -P ./remote/production/Caddyfile ${PROD_USER}@${PROD_IP}:~/bookshelf/
