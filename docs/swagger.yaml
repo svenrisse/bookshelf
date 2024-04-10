@@ -1,4 +1,4 @@
-basePath: /v1
+basePath: /v1/
 definitions:
   github_com_svenrisse_bookshelf_internal_models.ActivateUser:
     properties:
@@ -139,6 +139,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: Provide Fields to change
         in: body
         name: book

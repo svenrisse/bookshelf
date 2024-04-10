@@ -10,7 +10,7 @@
         "version": "1.0"
     },
     "host": "bookshelf.svenrisse.com",
-    "basePath": "/v1",
+    "basePath": "/v1/",
     "paths": {
         "/v1/books": {
             "post": {
@@ -106,6 +106,13 @@
                 ],
                 "summary": "Update a book by providing new values",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Provide Fields to change",
                         "name": "book",

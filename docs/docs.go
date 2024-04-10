@@ -113,6 +113,13 @@ const docTemplate = `{
                 "summary": "Update a book by providing new values",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Provide Fields to change",
                         "name": "book",
                         "in": "body",
@@ -362,7 +369,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "bookshelf.svenrisse.com",
-	BasePath:         "/v1",
+	BasePath:         "/v1/",
 	Schemes:          []string{},
 	Title:            "Bookshelf API",
 	Description:      "This is the API for the Bookshelf application.",
