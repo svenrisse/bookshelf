@@ -92,7 +92,7 @@ func (app *application) getBookHandler(w http.ResponseWriter, r *http.Request) {
 //	@Tags		books
 //	@Accept		json
 //	@Produce	json
-//	@Param		id	path		int	true	"Book ID"
+//	@Param		id		path		int			true	"Book ID"
 //	@Param		book	body		models.Book	true	"Provide Fields to change"
 //	@Success	200		{object}	models.Book
 //	@Failure	400
