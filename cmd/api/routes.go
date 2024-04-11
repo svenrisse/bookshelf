@@ -34,7 +34,11 @@ func (app *application) routes() http.Handler {
 		"/v1/books/:id",
 		app.requirePermission("books:write", app.updateBookHandler),
 	)
-	// router.HandlerFunc(http.MethodDelete, "/v1/books/:id", app.requirePermission("books:write", app.deleteBookHandler))
+	router.HandlerFunc(
+		http.MethodDelete,
+		"/v1/books/:id",
+		app.requirePermission("books:write", app.deleteBookHandler),
+	)
 
 	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
 	router.HandlerFunc(http.MethodPut, "/v1/users/activated", app.activateUserHandler)
