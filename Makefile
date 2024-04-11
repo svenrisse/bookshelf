@@ -73,8 +73,6 @@ audit: vendor
 	@echo 'Vetting code...'
 	go vet ./...
 	staticcheck ./...
-	@echo 'Running tests...'
-	gotest -v ./...
 
 ## vendor: tidy and vendor dependencies
 .PHONY: vendor
@@ -84,6 +82,11 @@ vendor:
 	go mod verify
 	@echo 'Vendoring dependencies...'
 	go mod vendor
+
+## test: run tests
+.PHONY: test
+test:
+	gotestsum --format testname ./...
 
 # ==================================================================================== #
 # BUILD
