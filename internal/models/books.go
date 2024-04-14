@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -51,6 +52,7 @@ type BookModelInterface interface {
 	Get(id int64) (*Book, error)
 	Update(book *Book) error
 	Delete(id int64) error
+	ListBooks(title string, genres []string, filters Filters) ([]*Book, Metadata, error)
 }
 
 func (b BookModel) Insert(book *Book) error {
@@ -98,7 +100,7 @@ func (b BookModel) Update(book *Book) error {
 	query := `
     UPDATE books
     SET title = $1, author = $2, year = $3, pages = $4, genres = $5, version = version + 1
-    WHERE id $6 AND version = $7
+    WHERE id = $6 AND version = $7
     RETURNING version`
 
 	args := []any{
@@ -151,4 +153,61 @@ func (b BookModel) Delete(id int64) error {
 	}
 
 	return nil
+}
+
+func (b BookModel) ListBooks(
+	title string,
+	genres []string,
+	filters Filters,
+) ([]*Book, Metadata, error) {
+	query := fmt.Sprintf(`
+    SELECT count(*) OVER(), id, created_at, title, author, year, pages, genres, version
+    FROM books
+    WHERE (to_tsvector('simple', title) @@ plainto_tsquery('simple', $1) OR $1 = '')
+    AND (genres @> $2 OR $2 = '{}')
+    ORDER %s %s, id ASC
+    LIMIT $3 OFFSET $4`, filters.sortColumn(), filters.sortDirection())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	args := []any{title, pq.Array(genres), filters.limit(), filters.offset()}
+
+	rows, err := b.DB.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, Metadata{}, err
+	}
+	defer rows.Close()
+
+	totalRecords := 0
+	books := []*Book{}
+
+	for rows.Next() {
+		var book Book
+
+		err := rows.Scan(
+			&totalRecords,
+			&book.ID,
+			&book.CreatedAt,
+			&book.Title,
+			&book.Author,
+			&book.Year,
+			&book.Pages,
+			pq.Array(&book.Genres),
+			&book.Version,
+		)
+		if err != nil {
+			return nil, Metadata{}, err
+		}
+
+		books = append(books, &book)
+	}
+
+	if err = rows.Close(); err != nil {
+		return nil, Metadata{}, err
+	}
+
+	metadata := calculateMetadata(totalRecords, filters.Page, filters.PageSize)
+
+	return books, metadata, nil
 }
