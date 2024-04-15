@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS usersBooksRelation (
   id bigserial PRIMARY KEY,
   bookId bigserial,
   userId bigserial, 
-  reviewId bigserial,
   read BOOLEAN NOT NULL,
   rating FLOAT(2),
   reviewBody text,
