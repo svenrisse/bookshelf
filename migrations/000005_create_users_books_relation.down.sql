@@ -1,2 +1,1 @@
 DROP TABLE IF EXISTS usersBooksRelation;
-DROP TABLE IF EXISTS reviews;
