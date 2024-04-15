@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   rating FLOAT(2),
   body text,
   created_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
+  version integer NOT NULL DEFAULT 1,
 
   FOREIGN KEY (bookId) REFERENCES books(id),
   FOREIGN KEY (userId) REFERENCES users(id)
