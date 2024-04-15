@@ -1,17 +1,13 @@
 package main
 
 import (
-	"errors"
 	"expvar"
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
-	"github.com/svenrisse/bookshelf/internal/models"
-	"github.com/svenrisse/bookshelf/internal/validator"
 	"github.com/tomasen/realip"
 	"golang.org/x/time/rate"
 )
@@ -77,97 +73,6 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
-}
-
-func (app *application) authenticate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Vary", "Authorization")
-
-		authorizationHeader := r.Header.Get("Authorization")
-
-		if authorizationHeader == "" {
-			r = app.contextSetUser(r, models.AnonymousUser)
-			next.ServeHTTP(w, r)
-			return
-		}
-
-		headerParts := strings.Split(authorizationHeader, " ")
-		if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-			app.invalidCredentialsResponse(w, r)
-			return
-		}
-
-		token := headerParts[1]
-
-		v := validator.New()
-
-		if models.ValidateTokenPlaintext(v, token); !v.Valid() {
-			app.invalidCredentialsResponse(w, r)
-			return
-		}
-
-		user, err := app.models.Users.GetForToken(models.ScopeAuthentication, token)
-		if err != nil {
-			if errors.Is(err, models.ErrRecordNotFound) {
-				app.invalidAuthenticationTokenResponse(w, r)
-				return
-			}
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-
-		r = app.contextSetUser(r, user)
-		next.ServeHTTP(w, r)
-	})
-}
-
-func (app *application) requireAuthenticatedUser(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user := app.contextGetUser(r)
-
-		if user.IsAnonymous() {
-			app.authenticationRequiredResponse(w, r)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func (app *application) requireActivatedUser(next http.HandlerFunc) http.HandlerFunc {
-	fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user := app.contextGetUser(r)
-
-		if !user.Activated {
-			app.inactiveAccountResponse(w, r)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-
-	return app.requireAuthenticatedUser(fn)
-}
-
-func (app *application) requirePermission(code string, next http.HandlerFunc) http.HandlerFunc {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		user := app.contextGetUser(r)
-
-		permissions, err := app.models.Permissions.GetAllForUser(user.ID)
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-
-		if !permissions.Include(code) {
-			app.notPermittedResponse(w, r)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	}
-
-	return app.requireActivatedUser(fn)
 }
 
 func (app *application) enableCORS(next http.Handler) http.Handler {
