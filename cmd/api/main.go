@@ -15,7 +15,6 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/svenrisse/bookshelf/internal/auth"
-	"github.com/svenrisse/bookshelf/internal/mailer"
 	"github.com/svenrisse/bookshelf/internal/models"
 	"github.com/svenrisse/bookshelf/internal/vcs"
 )
@@ -46,7 +45,6 @@ type application struct {
 	config config
 	logger *slog.Logger
 	models models.Models
-	mailer mailer.Mailer
 	wg     sync.WaitGroup
 }
 

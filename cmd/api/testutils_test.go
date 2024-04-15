@@ -8,14 +8,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/svenrisse/bookshelf/internal/mailer"
 	"github.com/svenrisse/bookshelf/internal/models/mocks"
 )
 
 func newTestApplication(t *testing.T) *application {
 	return &application{
 		logger: slog.New(slog.NewTextHandler(io.Discard, nil)),
-		mailer: mailer.New("", 0, "", "", ""),
 		models: mocks.NewMockModels(),
 	}
 }
