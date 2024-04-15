@@ -11,17 +11,13 @@ var (
 )
 
 type Models struct {
-	Books       BookModelInterface
-	Permissions PermissionsModelInterface
-	Tokens      TokenModelInterface
-	Users       UserModelInterface
+	Books BookModelInterface
+	Users UserModelInterface
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
-		Books:       BookModel{DB: db},
-		Permissions: PermissionsModel{DB: db},
-		Tokens:      TokenModel{DB: db},
-		Users:       UserModel{DB: db},
+		Books: BookModel{DB: db},
+		Users: UserModel{DB: db},
 	}
 }

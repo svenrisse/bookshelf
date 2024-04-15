@@ -34,3 +34,11 @@ func (m *BookModel) Update(book *models.Book) error {
 func (m *BookModel) Delete(id int64) error {
 	return nil
 }
+
+func (b BookModel) ListBooks(
+	title string,
+	genres []string,
+	filters models.Filters,
+) ([]*models.Book, models.Metadata, error) {
+	return nil, models.Metadata{}, nil
+}

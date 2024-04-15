@@ -14,6 +14,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/svenrisse/bookshelf/internal/auth"
 	"github.com/svenrisse/bookshelf/internal/mailer"
 	"github.com/svenrisse/bookshelf/internal/models"
 	"github.com/svenrisse/bookshelf/internal/vcs"
@@ -35,13 +36,6 @@ type config struct {
 		rps     float64
 		burst   int
 		enabled bool
-	}
-	smtp struct {
-		host     string
-		port     int
-		username string
-		password string
-		sender   string
 	}
 	cors struct {
 		trustedOrigins []string
@@ -86,17 +80,6 @@ func main() {
 	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
 	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter maximum burst")
 
-	flag.StringVar(&cfg.smtp.host, "smtp-host", "sandbox.smtp.mailtrap.io", "SMTP host")
-	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "SMTP port")
-	flag.StringVar(&cfg.smtp.username, "smtp-username", "-", "SMTP username")
-	flag.StringVar(&cfg.smtp.password, "smtp-password", "-", "SMTP password")
-	flag.StringVar(
-		&cfg.smtp.sender,
-		"smtp-sender",
-		"Bookshelf <no-reply@bookshelf.svenrisse.com>",
-		"SMTP sender",
-	)
-
 	flag.Func(
 		"cors-trusted-origins",
 		"Trusted CORS origins (space separated)",
@@ -134,17 +117,12 @@ func main() {
 		return time.Now().Unix()
 	}))
 
+	auth.NewAuth()
+
 	app := application{
 		config: cfg,
 		logger: logger,
 		models: models.NewModels(db),
-		mailer: mailer.New(
-			cfg.smtp.host,
-			cfg.smtp.port,
-			cfg.smtp.username,
-			cfg.smtp.password,
-			cfg.smtp.sender,
-		),
 	}
 
 	err = app.serve()
