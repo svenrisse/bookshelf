@@ -128,7 +128,7 @@ func (b BookModel) Update(book *Book) error {
 }
 
 func (b BookModel) Delete(id int64) error {
-	if id > 1 {
+	if id < 1 {
 		return ErrRecordNotFound
 	}
 
