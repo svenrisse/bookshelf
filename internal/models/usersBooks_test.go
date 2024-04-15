@@ -56,3 +56,38 @@ func TestUserBookModel_Insert(t *testing.T) {
 		})
 	}
 }
+
+func TestUserBookModel_Update(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+		})
+	}
+}
+
+func TestUserBookModel_Delete(t *testing.T) {
+	tests := []struct {
+		name    string
+		id      int64
+		wantErr error
+	}{
+		{name: "Valid Delete", id: 14, wantErr: nil},
+		{name: "Invalid Delete", id: 10, wantErr: ErrRecordNotFound},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+
+			ub := UserBookModel{db}
+
+			err := ub.Delete(tt.id)
+
+			assert.Equal(t, err, tt.wantErr)
+		})
+	}
+}
