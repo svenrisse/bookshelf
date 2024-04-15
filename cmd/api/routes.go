@@ -25,7 +25,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodDelete, "/v1/books/:id", app.deleteBookHandler)
 
 	router.HandlerFunc(http.MethodGet, "/v1/auth/:provider/callback", app.AuthCallbackFunction)
-	router.HandlerFunc(http.MethodGet, "/v1/logout/:provider", app.AuthLogout)
+	router.HandlerFunc(http.MethodGet, "/v1/auth/:provider/logout", app.AuthLogout)
 	router.HandlerFunc(http.MethodGet, "/v1/auth/:provider", app.Auth)
 
 	router.Handler(http.MethodGet, "/v1/debug/vars", expvar.Handler())

@@ -1,11 +1,5 @@
 basePath: /v1/
 definitions:
-  github_com_svenrisse_bookshelf_internal_models.ActivateUser:
-    properties:
-      token:
-        example: 2MADKDVCV2VC...
-        type: string
-    type: object
   github_com_svenrisse_bookshelf_internal_models.Book:
     description: Book information
     properties:
@@ -30,48 +24,6 @@ definitions:
         example: 1937
         type: integer
     type: object
-  github_com_svenrisse_bookshelf_internal_models.CreateToken:
-    properties:
-      email:
-        example: example@example.net
-        type: string
-      password:
-        example: pa55word
-        type: string
-    type: object
-  github_com_svenrisse_bookshelf_internal_models.CreateUser:
-    properties:
-      email:
-        example: testuser@testing.com
-        type: string
-      name:
-        example: testuser
-        type: string
-      password:
-        example: pa55word
-        type: string
-    type: object
-  github_com_svenrisse_bookshelf_internal_models.Token:
-    description: Token information
-    properties:
-      expiry:
-        type: string
-      token:
-        type: string
-    type: object
-  github_com_svenrisse_bookshelf_internal_models.User:
-    properties:
-      activated:
-        type: boolean
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
 host: bookshelf.svenrisse.com
 info:
   contact:
@@ -81,6 +33,42 @@ info:
   title: Bookshelf API
   version: "1.0"
 paths:
+  /v1/auth/{provider}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Discord / Github / Google
+        in: path
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+      summary: Let a User Login with given Provider
+      tags:
+      - users
+  /v1/auth/{provider}/logout:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Discord / Github / Google
+        in: path
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+      summary: Let a User Logout with given Provider
+      tags:
+      - users
   /v1/books:
     post:
       consumes:
@@ -170,72 +158,4 @@ paths:
       summary: Update a book by providing new values
       tags:
       - books
-  /v1/tokens/authentication:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        create a token for an account necessary for using certain endpoints
-        account needs to be created, and activated!
-      parameters:
-      - description: Add book
-        in: body
-        name: email
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateToken'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.Token'
-      summary: Create a bearer token
-      tags:
-      - tokens
-  /v1/users:
-    post:
-      consumes:
-      - application/json
-      description: provide user account data
-      parameters:
-      - description: User account details
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateUser'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.User'
-      summary: Create a new user account
-      tags:
-      - users
-  /v1/users/activated:
-    put:
-      consumes:
-      - application/json
-      description: activate an user an get :write permissions
-      parameters:
-      - description: TokenPlaintext
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.ActivateUser'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.User'
-      summary: Activate an user account
-      tags:
-      - users
 swagger: "2.0"

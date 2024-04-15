@@ -18,6 +18,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/auth/{provider}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Let a User Login with given Provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Discord / Github / Google",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    }
+                }
+            }
+        },
+        "/v1/auth/{provider}/logout": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Let a User Logout with given Provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Discord / Github / Google",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    }
+                }
+            }
+        },
         "/v1/books": {
             "post": {
                 "description": "create book with fields",
@@ -153,120 +209,9 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/v1/tokens/authentication": {
-            "post": {
-                "description": "create a token for an account necessary for using certain endpoints\naccount needs to be created, and activated!",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tokens"
-                ],
-                "summary": "Create a bearer token",
-                "parameters": [
-                    {
-                        "description": "Add book",
-                        "name": "email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateToken"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.Token"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/users": {
-            "post": {
-                "description": "provide user account data",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Create a new user account",
-                "parameters": [
-                    {
-                        "description": "User account details",
-                        "name": "account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.CreateUser"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.User"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/users/activated": {
-            "put": {
-                "description": "activate an user an get :write permissions",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Activate an user account",
-                "parameters": [
-                    {
-                        "description": "TokenPlaintext",
-                        "name": "account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.ActivateUser"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.User"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "github_com_svenrisse_bookshelf_internal_models.ActivateUser": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string",
-                    "example": "2MADKDVCV2VC..."
-                }
-            }
-        },
         "github_com_svenrisse_bookshelf_internal_models.Book": {
             "description": "Book information",
             "type": "object",
@@ -297,68 +242,6 @@ const docTemplate = `{
                 "year": {
                     "type": "integer",
                     "example": 1937
-                }
-            }
-        },
-        "github_com_svenrisse_bookshelf_internal_models.CreateToken": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "example@example.net"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "pa55word"
-                }
-            }
-        },
-        "github_com_svenrisse_bookshelf_internal_models.CreateUser": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "testuser@testing.com"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "testuser"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "pa55word"
-                }
-            }
-        },
-        "github_com_svenrisse_bookshelf_internal_models.Token": {
-            "description": "Token information",
-            "type": "object",
-            "properties": {
-                "expiry": {
-                    "type": "string"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_svenrisse_bookshelf_internal_models.User": {
-            "type": "object",
-            "properties": {
-                "activated": {
-                    "type": "boolean"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
                 }
             }
         }
