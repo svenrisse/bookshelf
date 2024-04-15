@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS usersBooksRelation (
   id bigserial PRIMARY KEY,
   bookId bigserial,
-  usersId bigserial, 
+  userId bigserial, 
   reviewId bigserial,
   read BOOLEAN NOT NULL,
   rating FLOAT(2),
@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS usersBooksRelation (
   reviewed_at timestamp(0) with time zone,
 
   FOREIGN KEY (bookId) REFERENCES books(id),
-  FOREIGN KEY (usersId) REFERENCES users(id),
-  UNIQUE (bookId, usersId)
+  FOREIGN KEY (userId) REFERENCES users(id),
+  UNIQUE (bookId, userId)
 );
