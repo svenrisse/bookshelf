@@ -65,7 +65,7 @@ db/migrations/force:
 
 ## audit: tidy and vendor dependencies and format, vet and test all code
 .PHONY: audit
-audit: vendor
+audit: 
 	@echo 'Formatting code...'
 	go fmt ./...
 	@echo "Formatting SWAG comments..."
