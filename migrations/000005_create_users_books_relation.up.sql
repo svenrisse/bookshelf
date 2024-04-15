@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS usersBooksRelation (
   added_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
   date_read timestamp(0) with time zone,
   reviewed_at timestamp(0) with time zone,
+  version integer NOT NULL DEFAULT 1,
 
   FOREIGN KEY (bookId) REFERENCES books(id),
   FOREIGN KEY (userId) REFERENCES users(id),
