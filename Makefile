@@ -22,7 +22,7 @@ confirm:
 ## run/api: run the cmd/api application
 .PHONY: run/api 
 run/api:
-	air -- -db-dsn=${DB_DSN} -smtp-username=${SMTP_USERNAME} -smtp-password=${SMTP_PASSWORD}
+	air -- -db-dsn=${DB_DSN}
 
 ## db: connect to db using psql
 .PHONY: db 
