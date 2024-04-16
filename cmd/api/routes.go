@@ -29,10 +29,10 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPatch, "/v1/books/:id", app.updateBookHandler)
 	router.HandlerFunc(http.MethodDelete, "/v1/books/:id", app.deleteBookHandler)
 
-	router.HandlerFunc(http.MethodGet, "/v1/:userid/books", app.listUsersBooksHandler)
-	router.HandlerFunc(http.MethodPost, "/v1/:userid/books", app.createUsersBooksHandler)
-	router.HandlerFunc(http.MethodPatch, "/v1/:userid/books/:bookid", app.updateUsersBooksHandler)
-	router.HandlerFunc(http.MethodDelete, "/v1/:userid/books/:bookid", app.deleteUsersBooksHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/user/books", app.listUsersBooksHandler)
+	router.HandlerFunc(http.MethodPost, "/v1/user/books", app.createUsersBooksHandler)
+	router.HandlerFunc(http.MethodPatch, "/v1/user/books/:bookid", app.updateUsersBooksHandler)
+	router.HandlerFunc(http.MethodDelete, "/v1/user/books/:bookid", app.deleteUsersBooksHandler)
 
 	return app.metrics(app.recoverPanic(app.enableCORS(app.rateLimit((router)))))
 }
