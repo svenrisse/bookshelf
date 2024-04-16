@@ -5,23 +5,48 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+
+	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
 type UserBook struct {
 	ID         int64     `json:"-"`
-	CreatedAt  time.Time `json:"-"`
-	ReadAt     time.Time `json:"read_at"`
-	ReviewedAt time.Time `json:"reviewed_at"`
 	BookID     int64     `json:"book_id"`
 	UserID     int64     `json:"user_id"`
 	Read       bool      `json:"read"`
 	Rating     float32   `json:"rating"`
 	ReviewBody string    `json:"review_body"`
+	CreatedAt  time.Time `json:"-"`
+	ReadAt     time.Time `json:"read_at"`
+	ReviewedAt time.Time `json:"reviewed_at"`
 	Version    int32     `json:"-"`
 }
 
 type UserBookModel struct {
 	DB *sql.DB
+}
+
+func ValidateUserBook(v *validator.Validator, userBook *UserBook) {
+	v.Check(userBook.UserID != 0, "UserID", "must be provided")
+	v.Check(userBook.UserID > 0, "UserID", "must be a positive integer")
+
+	v.Check(userBook.BookID != 0, "BookID", "must be provided")
+	v.Check(userBook.BookID > 0, "BookID", "must be a positive integer")
+
+	if len(userBook.ReviewBody) != 0 {
+		v.Check(len(userBook.ReviewBody) <= 5000, "reviewBody", "must be less than 5000 characters")
+		v.Check(userBook.Rating != 0, "rating", "if given reviewBody, rating must also be provided")
+	}
+
+	if !userBook.ReadAt.IsZero() {
+		v.Check(userBook.ReadAt.Year() >= 1900, "ReadAt-Year", "must be greater than 1900")
+		v.Check(userBook.ReadAt.Compare(time.Now()) <= 0, "ReadAt", "must not be in the future")
+	}
+
+	if !userBook.ReviewedAt.IsZero() {
+		v.Check(userBook.ReviewedAt.Year() >= 1900, "ReviewedAt-Year", "must be greater than 1900")
+		v.Check(userBook.ReviewedAt.Compare(time.Now()) <= 0, "ReviewedAt", "must not be in the future")
+	}
 }
 
 func (ub UserBookModel) Insert(userBook *UserBook) error {
