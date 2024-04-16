@@ -35,7 +35,7 @@ func ValidateUserBook(v *validator.Validator, userBook *UserBook) {
 
 	if len(userBook.ReviewBody) != 0 {
 		v.Check(len(userBook.ReviewBody) <= 5000, "reviewBody", "must be less than 5000 characters")
-		v.Check(userBook.Rating != 0, "rating", "if given reviewBody, rating must also be provided")
+		v.Check(userBook.Rating != 0, "rating", "if given reviewBody, rating must be provided")
 	}
 
 	if !userBook.ReadAt.IsZero() {
@@ -45,7 +45,11 @@ func ValidateUserBook(v *validator.Validator, userBook *UserBook) {
 
 	if !userBook.ReviewedAt.IsZero() {
 		v.Check(userBook.ReviewedAt.Year() >= 1900, "ReviewedAt-Year", "must be greater than 1900")
-		v.Check(userBook.ReviewedAt.Compare(time.Now()) <= 0, "ReviewedAt", "must not be in the future")
+		v.Check(
+			userBook.ReviewedAt.Compare(time.Now()) <= 0,
+			"ReviewedAt",
+			"must not be in the future",
+		)
 	}
 }
 
@@ -55,7 +59,15 @@ func (ub UserBookModel) Insert(userBook *UserBook) error {
     VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING id, added_at`
 
-	args := []any{userBook.BookID, userBook.UserID, userBook.Read, userBook.Rating, userBook.ReviewBody, userBook.ReadAt, userBook.ReviewedAt}
+	args := []any{
+		userBook.BookID,
+		userBook.UserID,
+		userBook.Read,
+		userBook.Rating,
+		userBook.ReviewBody,
+		userBook.ReadAt,
+		userBook.ReviewedAt,
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
