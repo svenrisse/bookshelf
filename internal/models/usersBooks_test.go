@@ -68,14 +68,33 @@ func TestUserBookModel_Insert(t *testing.T) {
 }
 
 func TestUserBookModel_Update(t *testing.T) {
+	originalUserBook := UserBook{
+		ID:         14,
+		BookID:     2,
+		UserID:     1,
+		Read:       true,
+		Rating:     4.5,
+		ReviewBody: "Very good book yes!",
+		ReadAt:     time.Date(2024, 04, 10, 14, 30, 00, 00, time.UTC),
+		ReviewedAt: time.Date(2024, 04, 11, 15, 00, 00, 00, time.UTC),
+		Version:    1,
+	}
 	tests := []struct {
-		name    string
-		wantErr string
+		name     string
+		userBook UserBook
+		wantErr  error
 	}{
-		// TODO: Add test cases.
+		// TODO: Add cases
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+
+			ub := UserBookModel{db}
+
+			err := ub.Update(&tt.userBook)
+
+			assert.Equal(t, err, tt.wantErr)
 		})
 	}
 }
