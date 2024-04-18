@@ -75,6 +75,40 @@ func (ub UserBookModel) Insert(userBook *UserBook) error {
 	return ub.DB.QueryRowContext(ctx, query, args...).Scan(&userBook.ID, &userBook.CreatedAt)
 }
 
+func (ub UserBookModel) Get(id int64) (*UserBook, error) {
+	if id < 1 {
+		return nil, ErrRecordNotFound
+	}
+	query := `
+    SELECT id, bookId, userId, read, rating, reviewBody, added_at, date_read, reviewed_at, version
+    FROM usersBooksRelation
+    WHERE id = $1`
+
+	var userBook UserBook
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := ub.DB.QueryRowContext(ctx, query, id).Scan(
+		&userBook.ID,
+		&userBook.BookID,
+		&userBook.UserID,
+		&userBook.Read,
+		&userBook.Rating,
+		&userBook.ReviewBody,
+		&userBook.ReadAt,
+		&userBook.ReviewedAt,
+		&userBook.Version)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return &userBook, nil
+}
+
 func (ub UserBookModel) Update(userBook *UserBook) error {
 	query := `
     UPDATE usersBooksRelation 
