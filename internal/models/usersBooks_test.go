@@ -84,7 +84,31 @@ func TestUserBookModel_Update(t *testing.T) {
 		userBook UserBook
 		wantErr  error
 	}{
-		// TODO: Add cases
+		{
+			name: "Update Rating",
+			userBook: UserBook{
+				ID:         originalUserBook.ID,
+				Read:       originalUserBook.Read,
+				Rating:     4.25,
+				ReviewBody: "I like this book less now",
+				ReadAt:     originalUserBook.ReadAt,
+				ReviewedAt: originalUserBook.ReviewedAt,
+				Version:    1,
+			},
+		},
+		{
+			name: "Wrong Version",
+			userBook: UserBook{
+				ID:         originalUserBook.ID,
+				Read:       originalUserBook.Read,
+				Rating:     4.25,
+				ReviewBody: originalUserBook.ReviewBody,
+				ReadAt:     originalUserBook.ReadAt,
+				ReviewedAt: originalUserBook.ReadAt,
+				Version:    2,
+			},
+			wantErr: ErrEditConflict,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
