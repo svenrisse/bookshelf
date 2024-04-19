@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS usersBooksRelation (
   rating FLOAT(2),
   reviewBody text,
   added_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
-  date_read timestamp(0) with time zone,
+  read_at timestamp(0) with time zone,
   reviewed_at timestamp(0) with time zone,
   version int NOT NULL DEFAULT 1,
 
@@ -46,5 +46,5 @@ INSERT INTO users (id, name, avatar, provider) VALUES (1, 'Alice Jones', 'avat',
 INSERT INTO books (id, title, author, year, pages, genres) VALUES (1, 'The Hobbit', 'JRR Tolkien', 1890, 320, ARRAY ['Fantasy', 'Childrens Literature']);
 INSERT INTO books (id, title, author, year, pages, genres) VALUES (2, 'A Game Of Thrones', 'GRRM Martin', 1990, 700, ARRAY ['Fantasy', 'Epic']);
 
-INSERT INTO usersBooksRelation (id, bookId, userId, read, rating, reviewBody, date_read, reviewed_at, version)
+INSERT INTO usersBooksRelation (id, bookId, userId, read, rating, reviewBody, read_at, reviewed_at, version)
 VALUES (14, 2, 1, true, 4.5, 'Very good book yes!', '2024-04-10 14:30:00', '2024-04-11 15:00:00', 1);

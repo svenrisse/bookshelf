@@ -3,10 +3,10 @@ CREATE TABLE IF NOT EXISTS usersBooksRelation (
   bookId bigserial,
   userId bigserial, 
   read BOOLEAN NOT NULL,
-  rating FLOAT(2),
+  rating REAL,
   reviewBody text,
   added_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
-  date_read timestamp(0) with time zone,
+  read_at timestamp(0) with time zone,
   reviewed_at timestamp(0) with time zone,
   version integer NOT NULL DEFAULT 1,
 

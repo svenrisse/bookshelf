@@ -55,7 +55,7 @@ func ValidateUserBook(v *validator.Validator, userBook *UserBook) {
 
 func (ub UserBookModel) Insert(userBook *UserBook) error {
 	query := `
-    INSERT INTO usersBooksRelation (bookId, userId, read, rating, reviewBody, date_read, reviewed_at)
+    INSERT INTO usersBooksRelation (bookId, userId, read, rating, reviewBody, read_at, reviewed_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING id, added_at`
 
@@ -80,7 +80,7 @@ func (ub UserBookModel) Get(id int64) (*UserBook, error) {
 		return nil, ErrRecordNotFound
 	}
 	query := `
-    SELECT id, bookId, userId, read, rating, reviewBody, added_at, date_read, reviewed_at, version
+    SELECT id, bookId, userId, read, rating, reviewBody, added_at, read_at, reviewed_at, version
     FROM usersBooksRelation
     WHERE id = $1`
 
@@ -112,12 +112,12 @@ func (ub UserBookModel) Get(id int64) (*UserBook, error) {
 func (ub UserBookModel) Update(userBook *UserBook) error {
 	query := `
     UPDATE usersBooksRelation 
-    SET read = $1, rating = $2, reviewBody = $2, date_read = $3, date_reviewed_at = $4, version = version + 1
-    WHERE id = $5 AND version = $6
+    SET read = $1, rating = $2::REAL, reviewBody = $3, read_at = $4, reviewed_at = $5, version = version + 1
+    WHERE id = $6 AND version = $7
     RETURNING version`
 
 	args := []any{
-		userBook.Read, userBook.Rating, userBook.ReviewBody, userBook.ReadAt, userBook.ReviewedAt, userBook.Version, userBook.ID, userBook.Version,
+		userBook.Read, userBook.Rating, userBook.ReviewBody, userBook.ReadAt, userBook.ReviewedAt, userBook.ID, userBook.Version,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
