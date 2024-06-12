@@ -1,5 +1,7 @@
 # Instructions to work on UI
 
+feel free to edit this file to take notes
+
 ## some preliminary considerations:
 
 #### do you want to use a component library?
@@ -11,6 +13,11 @@
 
 - considering that, decide what should be tested regardless and what tools might be useful for that
 - (vitest, playwright, cypress, jest, react-testing-library,...)
+
+#### deployment
+
+- vercel is the go-to hosting provider for nextjs, react, etc.
+- let's take 30 minutes together to deploy the ui to vercel and talk about the provided ci/cd
 
 ## data fetching
 
