@@ -25,9 +25,17 @@ feel free to edit this file to take notes
   Spend 5-10 Minutes reading the docs to understand why it should be used in this project.
 - I took the liberty to init React-Query, the eslint-plugin and the React-Query-Devtools for you in [863b9a361ff1](https://github.com/svenrisse/bookshelf/commit/863b9a361ff1cf3465ec72e37d21cc53ac810369)
 
-## first issues
+## first issue
 
 - [#11](https://github.com/svenrisse/bookshelf/issues/11) should be a good place to start.
-- I'll outline the steps for this issue to get you feeling comfortable working in this project
+- I'll outline the steps for this issue, to get you feeling comfortable working on this project
 
-- [ ] assign yourself this issue, and move it to "In progress" on the [github project](https://github.com/users/svenrisse/projects/3/views/1)
+- [ ] assign yourself this issue by moving it from "UI-Backlog" to "In progress" on the [github project](https://github.com/users/svenrisse/projects/3/views/1)
+- [ ] create a branch with a fitting name, using the github index as a prefix, like 11-bookDetailsPage
+- [ ] push the local branch to github, to get preview deployments and working ci/cd
+- [ ] we want the url for this page to be /book/show/{id}, use nextjs [slugs](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes) for that
+- [ ] one way of creating user interfaces is using tones of grey at the start and implement colors later, feel free to give this a try
+- [ ] don't worry about data fetching for now and build responsive components with dummy data (remember to use the provided goodreads link for reference)
+- [ ] for now just render 5 star icons, we'll worry about correctly coloring them later
+- [ ] looking at the goodreads example, you'll see a lot of links. think about more /pages/... to implement and when you would need slugs
+- [ ] it's time to fetch the data from the API!
