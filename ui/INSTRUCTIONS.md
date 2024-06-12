@@ -38,4 +38,9 @@ feel free to edit this file to take notes
 - [ ] don't worry about data fetching for now and build responsive components with dummy data (remember to use the provided goodreads link for reference)
 - [ ] for now just render 5 star icons, we'll worry about correctly coloring them later
 - [ ] looking at the goodreads example, you'll see a lot of links. think about more /pages/... to implement and when you would need slugs
-- [ ] it's time to fetch the data from the API!
+- [ ] it's time to fetch the data from the API, lets look at this step in a dedicated section
+
+## data fetching with React-Query
+
+![image](https://github.com/svenrisse/bookshelf/assets/89209935/48cb2147-2259-4b34-8f62-abf54fb85d49)
+
