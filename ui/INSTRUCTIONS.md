@@ -42,5 +42,10 @@ feel free to edit this file to take notes
 
 ## data fetching with React-Query
 
-![image](https://github.com/svenrisse/bookshelf/assets/89209935/48cb2147-2259-4b34-8f62-abf54fb85d49)
+this is a simple get request with react-query using fetch under the hood
 
+- using an inline queryFn is most often the right way of doing things
+- consider moving the useQuery call into its own function/file to make it a custom hook, this makes testing and reusing it way easier
+- take a look at all the vars and methods useQuery returns and what purpose they might serve
+
+![image](https://github.com/svenrisse/bookshelf/assets/89209935/48cb2147-2259-4b34-8f62-abf54fb85d49)
