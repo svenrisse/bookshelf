@@ -22,17 +22,11 @@ type User struct {
 }
 
 type CreateUser struct {
-	Name string `json:"name"     example:"testuser"`
+	Name string `json:"name" example:"testuser"`
 }
 
 type UserModel struct {
 	DB *sql.DB
-}
-
-type UserModelInterface interface {
-	Insert(user *User) error
-	Exists(id int) (bool, error)
-	GetByEmail(email string) (*User, error)
 }
 
 func ValidateUser(v *validator.Validator, user *User) {
