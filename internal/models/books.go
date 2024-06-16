@@ -47,14 +47,6 @@ type BookModel struct {
 	DB *sql.DB
 }
 
-type BookModelInterface interface {
-	Insert(book *Book) error
-	Get(id int64) (*Book, error)
-	Update(book *Book) error
-	Delete(id int64) error
-	ListBooks(title string, genres []string, filters Filters) ([]*Book, Metadata, error)
-}
-
 func (b BookModel) Insert(book *Book) error {
 	query := `
     INSERT INTO books (title, author, year, pages, genres)

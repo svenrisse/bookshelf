@@ -11,8 +11,8 @@ var (
 )
 
 type Models struct {
-	Books    BookModelInterface
-	Users    UserModelInterface
+	Books    BookModel
+	Users    UserModel
 	UserBook UserBookModel
 }
 

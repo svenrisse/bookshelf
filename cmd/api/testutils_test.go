@@ -7,14 +7,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/svenrisse/bookshelf/internal/models/mocks"
 )
 
 func newTestApplication(t *testing.T) *application {
 	return &application{
 		logger: slog.New(slog.NewTextHandler(io.Discard, nil)),
-		models: mocks.NewMockModels(),
 	}
 }
 
@@ -50,7 +47,11 @@ func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, strin
 	return rs.StatusCode, rs.Header, string(body)
 }
 
-func (ts *testServer) post(t *testing.T, urlPath string, body io.Reader) (int, http.Header, string) {
+func (ts *testServer) post(
+	t *testing.T,
+	urlPath string,
+	body io.Reader,
+) (int, http.Header, string) {
 	rq, err := http.NewRequest(http.MethodPost, ts.URL+urlPath, body)
 	if err != nil {
 		t.Fatal(err)
