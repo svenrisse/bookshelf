@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
@@ -53,6 +54,60 @@ func (app *application) createUsersBooksHandler(w http.ResponseWriter, r *http.R
 	}
 }
 
-func (app *application) deleteUsersBooksHandler(w http.ResponseWriter, r *http.Request) {}
-func (app *application) listUsersBooksHandler(w http.ResponseWriter, r *http.Request)   {}
-func (app *application) updateUsersBooksHandler(w http.ResponseWriter, r *http.Request) {}
+func (app *application) deleteUsersBooksHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	err = app.models.UserBook.Delete(id)
+	if err != nil {
+		if errors.Is(err, models.ErrRecordNotFound) {
+			app.notFoundResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "UserBook successfully deleted"}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
+
+func (app *application) updateUsersBooksHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+	}
+
+	userBook, err := app.models.UserBook.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrRecordNotFound) {
+			app.notFoundResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	var input struct {
+		Version     *int
+		Read        *bool
+		Rating      *float32
+		reviewBody  *string
+		Read_at     *time.Time
+		Reviewed_at *time.Time
+	}
+
+	err = app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	// ...
+}
+func (app *application) listUsersBooksHandler(w http.ResponseWriter, r *http.Request) {}
