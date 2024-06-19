@@ -55,3 +55,11 @@ this is a simple get request with react-query using fetch under the hood
 ![image](https://res.cloudinary.com/practicaldev/image/fetch/s--h_E-Gwvm--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_800/https://cdn.hashnode.com/res/hashnode/image/upload/v1643349189447/XLfQFf761.png)
 
 - take note of the react-query-devtools while implementing your own api call, it makes debuging and understanding what might be going wrong a breeze
+- you can find it on your localhost instance in one corner
+
+## loading state
+
+- think about how you want to show a loading state to the user
+- you might want to use a [skeleton](https://ui.shadcn.com/docs/components/skeleton)
+- use one of the booleans returned from useQuery to get the loading state
+- tip: for development it's useful to implement the loading skeletons for the !loading state (you don't have to keep refreshing)
