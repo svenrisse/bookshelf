@@ -50,6 +50,8 @@ this is a simple get request with react-query using fetch under the hood
 - consider moving the useQuery call into its own function/file to make it a custom hook, this makes testing and reusing it way easier
 - take a look at all the vars and methods useQuery returns and what purpose they might serve
 
+---
+
 ![image](https://res.cloudinary.com/practicaldev/image/fetch/s--h_E-Gwvm--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_800/https://cdn.hashnode.com/res/hashnode/image/upload/v1643349189447/XLfQFf761.png)
 
 - take note of the react-query-devtools while implementing your own api call, it makes debuging and understanding what might be going wrong a breeze
