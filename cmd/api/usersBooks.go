@@ -94,12 +94,11 @@ func (app *application) updateUsersBooksHandler(w http.ResponseWriter, r *http.R
 	}
 
 	var input struct {
-		Version     *int
-		Read        *bool
-		Rating      *float32
-		reviewBody  *string
-		Read_at     *time.Time
-		Reviewed_at *time.Time
+		Read       *bool
+		Rating     *float32
+		ReviewBody *string
+		ReadAt     *time.Time
+		ReviewedAt *time.Time
 	}
 
 	err = app.readJSON(w, r, &input)
@@ -108,7 +107,43 @@ func (app *application) updateUsersBooksHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	// ...
+	if input.Read != nil {
+		userBook.Read = *input.Read
+	}
+	if input.Rating != nil {
+		userBook.Rating = *input.Rating
+	}
+	if input.ReviewBody != nil {
+		userBook.ReviewBody = *input.ReviewBody
+	}
+	if input.ReadAt != nil {
+		userBook.ReadAt = *input.ReadAt
+	}
+	if input.ReviewedAt != nil {
+		userBook.ReviewedAt = *input.ReviewedAt
+	}
+
+	v := validator.New()
+
+	if models.ValidateUserBook(v, userBook); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.models.UserBook.Update(userBook)
+	if err != nil {
+		if errors.Is(err, models.ErrEditConflict) {
+			app.editConflictResponse(w, r)
+			return
+		}
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"userBook": userBook}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
 
 func (app *application) listUsersBooksHandler(w http.ResponseWriter, r *http.Request) {
