@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
+	"github.com/lib/pq"
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
@@ -160,4 +162,59 @@ func (ub UserBookModel) Delete(id int64) error {
 	}
 
 	return nil
+}
+
+func (ub UserBookModel) List(
+	title string,
+	genres []string,
+	rating float32,
+	read bool,
+	filters Filters,
+) ([]*UserBook, Metadata, error) {
+	query := fmt.Sprintf(``)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	args := []any{title, pq.Array(genres), rating, read, filters.limit(), filters.offset()}
+
+	rows, err := ub.DB.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, Metadata{}, err
+	}
+
+	defer rows.Close()
+
+	totalRecords := 0
+	userBooks := []*UserBook{}
+
+	for rows.Next() {
+		var userBook UserBook
+
+		err := rows.Scan(
+			&totalRecords,
+			&userBook.ID,
+			&userBook.BookID,
+			&userBook.UserID,
+			&userBook.Read,
+			&userBook.Rating,
+			&userBook.ReviewBody,
+			&userBook.CreatedAt,
+			&userBook.ReadAt,
+			&userBook.ReviewedAt,
+			&userBook.Version,
+		)
+		if err != nil {
+			return nil, Metadata{}, err
+		}
+
+		userBooks = append(userBooks, &userBook)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, Metadata{}, err
+	}
+
+	metadata := calculateMetadata(totalRecords, filters.Page, filters.PageSize)
+	return userBooks, metadata, nil
 }
