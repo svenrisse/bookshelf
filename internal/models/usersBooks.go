@@ -11,16 +11,18 @@ import (
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
+// UserBook model info
+// @Description UserBook information
 type UserBook struct {
-	ID         int64     `json:"-"`
-	BookID     int64     `json:"book_id"`
-	UserID     int64     `json:"user_id"`
-	Read       bool      `json:"read"`
-	Rating     float32   `json:"rating"`
-	ReviewBody string    `json:"review_body"`
+	ID         int64     `json:"-"           example:"1"`
+	BookID     int64     `json:"book_id"     example:"1"`
+	UserID     int64     `json:"user_id"     example:"1"`
+	Read       bool      `json:"read"        example:"true"`
+	Rating     float32   `json:"rating"      example:"4.5"`
+	ReviewBody string    `json:"review_body" example:"I loved this book!"`
 	CreatedAt  time.Time `json:"-"`
-	ReadAt     time.Time `json:"read_at"`
-	ReviewedAt time.Time `json:"reviewed_at"`
+	ReadAt     time.Time `json:"read_at"     example:"1975-08-19T23:15:30.000Z"`
+	ReviewedAt time.Time `json:"reviewed_at" example:"1975-08-19T23:15:30.000Z"`
 	Version    int32     `json:"-"`
 }
 
@@ -103,12 +105,13 @@ func (ub UserBookModel) Get(id int64) (*UserBook, error) {
 		&userBook.ReviewedAt,
 		&userBook.Version)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
 			return nil, ErrRecordNotFound
+		default:
+			return nil, err
 		}
-		return nil, err
 	}
-
 	return &userBook, nil
 }
 

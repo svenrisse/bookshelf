@@ -21,7 +21,7 @@ import (
 //	@Failure		400
 //	@Failure		422
 //	@Failure		500
-//	@Router			/v1/books [post]
+//	@Router			/books [post]
 func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request) {
 	book := &models.Book{}
 	err := app.readJSON(w, r, &book)
@@ -62,7 +62,7 @@ func (app *application) createBookHandler(w http.ResponseWriter, r *http.Request
 //	@Failure	400
 //	@Failure	404
 //	@Failure	500
-//	@Router		/v1/books/{id} [get]
+//	@Router		/books/{id} [get]
 func (app *application) getBookHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r)
 	if err != nil {
@@ -100,7 +100,7 @@ func (app *application) getBookHandler(w http.ResponseWriter, r *http.Request) {
 //	@Failure	409
 //	@Failure	422
 //	@Failure	500
-//	@Router		/v1/books/{id} [patch]
+//	@Router		/books/{id} [patch]
 func (app *application) updateBookHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r)
 	if err != nil {

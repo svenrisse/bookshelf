@@ -18,6 +18,49 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/user/books": {
+            "post": {
+                "description": "this is a connection between users and books",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userBooks"
+                ],
+                "summary": "add a userBook",
+                "parameters": [
+                    {
+                        "description": "Create UserBook",
+                        "name": "book",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.UserBook"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_svenrisse_bookshelf_internal_models.UserBook"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/v1/auth/{provider}": {
             "get": {
                 "consumes": [
@@ -242,6 +285,40 @@ const docTemplate = `{
                 "year": {
                     "type": "integer",
                     "example": 1937
+                }
+            }
+        },
+        "github_com_svenrisse_bookshelf_internal_models.UserBook": {
+            "description": "UserBook information",
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "rating": {
+                    "type": "number",
+                    "example": 4.5
+                },
+                "read": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "read_at": {
+                    "type": "string",
+                    "example": "1975-08-19T23:15:30.000Z"
+                },
+                "review_body": {
+                    "type": "string",
+                    "example": "I loved this book!"
+                },
+                "reviewed_at": {
+                    "type": "string",
+                    "example": "1975-08-19T23:15:30.000Z"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }

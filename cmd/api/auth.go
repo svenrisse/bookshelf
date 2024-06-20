@@ -47,7 +47,12 @@ func (app *application) AuthCallbackFunction(w http.ResponseWriter, r *http.Requ
 		}
 	}
 
-	http.Redirect(w, r, "https://bookshelf.svenrisse.com/v1/healthcheck", http.StatusTemporaryRedirect)
+	http.Redirect(
+		w,
+		r,
+		"https://bookshelf.svenrisse.com/v1/healthcheck",
+		http.StatusTemporaryRedirect,
+	)
 }
 
 // Auth godoc
@@ -58,7 +63,7 @@ func (app *application) AuthCallbackFunction(w http.ResponseWriter, r *http.Requ
 //	@Produce		json
 //	@Param			provider	path		string	true	"Discord / Github / Google"
 //	@Success		302
-//	@Router			/v1/auth/{provider}/logout [get]
+//	@Router			auth/{provider}/logout [get]
 func (app *application) AuthLogout(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 	provider := params.ByName("provider")
@@ -78,7 +83,7 @@ func (app *application) AuthLogout(w http.ResponseWriter, r *http.Request) {
 //	@Produce		json
 //	@Param			provider	path		string	true	"Discord / Github / Google"
 //	@Success		302
-//	@Router			/v1/auth/{provider} [get]
+//	@Router			auth/{provider} [get]
 func (app *application) Auth(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 	provider := params.ByName("provider")

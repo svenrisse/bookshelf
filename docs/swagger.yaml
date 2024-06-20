@@ -24,6 +24,31 @@ definitions:
         example: 1937
         type: integer
     type: object
+  github_com_svenrisse_bookshelf_internal_models.UserBook:
+    description: UserBook information
+    properties:
+      book_id:
+        example: 1
+        type: integer
+      rating:
+        example: 4.5
+        type: number
+      read:
+        example: true
+        type: boolean
+      read_at:
+        example: "1975-08-19T23:15:30.000Z"
+        type: string
+      review_body:
+        example: I loved this book!
+        type: string
+      reviewed_at:
+        example: "1975-08-19T23:15:30.000Z"
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
 host: bookshelf.svenrisse.com
 info:
   contact:
@@ -33,6 +58,34 @@ info:
   title: Bookshelf API
   version: "1.0"
 paths:
+  /user/books:
+    post:
+      consumes:
+      - application/json
+      description: this is a connection between users and books
+      parameters:
+      - description: Create UserBook
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.UserBook'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_svenrisse_bookshelf_internal_models.UserBook'
+        "400":
+          description: Bad Request
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: add a userBook
+      tags:
+      - userBooks
   /v1/auth/{provider}:
     get:
       consumes:

@@ -9,6 +9,19 @@ import (
 	"github.com/svenrisse/bookshelf/internal/validator"
 )
 
+// createUserBookHandler godoc
+//
+//	@Summary		add a userBook
+//	@Description	this is a connection between users and books
+//	@Tags			userBooks
+//	@Accept			json
+//	@Produce		json
+//	@Param			book	body		models.UserBook	true	"Create UserBook"
+//	@Success		201		{object}	models.UserBook
+//	@Failure		400
+//	@Failure		422
+//	@Failure		500
+//	@Router			/user/books [post]
 func (app *application) createUsersBooksHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		BookID     int64     `json:"bookID"`
