@@ -98,6 +98,7 @@ func (ub UserBookModel) Get(id int64) (*UserBook, error) {
 		&userBook.Read,
 		&userBook.Rating,
 		&userBook.ReviewBody,
+		&userBook.CreatedAt,
 		&userBook.ReadAt,
 		&userBook.ReviewedAt,
 		&userBook.Version)

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
@@ -190,6 +191,84 @@ func TestValidateUserBook(t *testing.T) {
 
 			ValidateUserBook(v, &tt.userBook)
 			assert.DeepEqual(t, tt.wantError, v.Errors)
+		})
+	}
+}
+
+func TestUserBookModel_Get(t *testing.T) {
+	tests := []struct {
+		name    string
+		id      int64
+		want    *UserBook
+		wantErr string
+	}{
+		// TODO: add more tests
+		{name: "missing id", id: 0, want: nil, wantErr: "record not found"},
+		// {
+		// 	name: "with existing id",
+		// 	id:   14,
+		// 	want: &UserBook{
+		// 		ID:         14,
+		// 		BookID:     2,
+		// 		UserID:     1,
+		// 		Read:       true,
+		// 		Rating:     4.5,
+		// 		ReviewBody: "Very good book yes!",
+		// 		CreatedAt:  time.Date(2024, 04, 10, 14, 30, 00, 00, time.UTC),
+		// 		ReadAt:     time.Date(2024, 04, 10, 14, 30, 00, 00, time.UTC),
+		// 		ReviewedAt: time.Date(2024, 04, 11, 15, 00, 00, 00, time.UTC),
+		// 		Version:    1,
+		// 	},
+		// 	wantErr: "",
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+
+			ub := UserBookModel{db}
+
+			_, err := ub.Get(tt.id)
+
+			assert.Equal(t, err.Error(), tt.wantErr)
+		})
+	}
+}
+
+func TestUserBookModel_List(t *testing.T) {
+	type args struct {
+		title   string
+		genres  []string
+		rating  float32
+		read    bool
+		filters Filters
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []*UserBook
+		wantErr string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewTestDB(t)
+			ub := UserBookModel{db}
+
+			got, _, err := ub.List(
+				tt.args.title,
+				tt.args.genres,
+				tt.args.rating,
+				tt.args.read,
+				tt.args.filters,
+			)
+
+			assert.Equal(t, err.Error(), tt.wantErr)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("UserBookModel.List() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
