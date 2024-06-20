@@ -144,6 +144,48 @@ func (app *application) readInt(
 	return i
 }
 
+func (app *application) readBool(
+	qs url.Values,
+	key string,
+	defaultValue bool,
+	v *validator.Validator,
+) bool {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	b, err := strconv.ParseBool(s)
+	if err != nil {
+		v.AddError(key, "must be a bool value")
+		return defaultValue
+	}
+
+	return b
+}
+
+func (app *application) readFloat(
+	qs url.Values,
+	key string,
+	defaultValue float32,
+	v *validator.Validator,
+) float32 {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	f, err := strconv.ParseFloat(s, 32)
+	if err != nil {
+		v.AddError(key, "must be a float val")
+		return defaultValue
+	}
+
+	return float32(f)
+}
+
 func (app *application) readCSV(qs url.Values, key string, defaultValue []string) []string {
 	csv := qs.Get(key)
 
