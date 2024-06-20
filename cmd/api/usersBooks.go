@@ -110,4 +110,63 @@ func (app *application) updateUsersBooksHandler(w http.ResponseWriter, r *http.R
 
 	// ...
 }
-func (app *application) listUsersBooksHandler(w http.ResponseWriter, r *http.Request) {}
+
+func (app *application) listUsersBooksHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Title  string
+		Genres []string
+		Rating float32
+		Read   bool
+		models.Filters
+	}
+
+	v := validator.New()
+
+	qs := r.URL.Query()
+
+	input.Title = app.readString(qs, "title", "")
+	input.Genres = app.readCSV(qs, "genres", []string{})
+	input.Rating = app.readFloat(qs, "rating", 0, v)
+	input.Read = app.readBool(qs, "read", false, v)
+	input.Filters.Page = app.readInt(qs, "page", 1, v)
+	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
+	input.Filters.Sort = app.readString(qs, "sort", "id")
+	input.Filters.SortSafeList = []string{
+		"title",
+		"rating",
+		"read_at",
+		"reviewed_at",
+		"published_at",
+		"-title",
+		"-rating",
+		"-read_at",
+		"-reviewed_at",
+		"-published_at",
+	}
+
+	if models.ValidateFilters(v, input.Filters); v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	userBooks, metadata, err := app.models.UserBook.List(
+		input.Title,
+		input.Genres,
+		input.Rating,
+		input.Read,
+		input.Filters,
+	)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+	err = app.writeJSON(
+		w,
+		http.StatusOK,
+		envelope{"userBooks": userBooks, "metadata": metadata},
+		nil,
+	)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
